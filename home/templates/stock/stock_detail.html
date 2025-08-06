@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Stock Details - YOUNG4CHICKS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="content-wrapper">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h1>
+                                <i class="bi bi-box-seam me-2"></i>Stock Details
+                            </h1>
+                            <div class="btn-group">
+                                <a href="{% url 'stock_update' stock.pk %}" class="btn btn-warning">
+                                    <i class="bi bi-pencil me-1"></i>Edit
+                                </a>
+                                <a href="{% url 'stock_delete' stock.pk %}" class="btn btn-danger">
+                                    <i class="bi bi-trash me-1"></i>Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-info-circle me-2"></i>{{ stock.stock_name }}
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">Stock Name</label>
+                                    <p class="h5">{{ stock.stock_name }}</p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">Quantity Available</label>
+                                    <p class="h5">
+                                        <span class="badge bg-primary p-2" style="font-size: 1rem;">
+                                            {{ stock.quantity }} chicks
+                                        </span>
+                                    </p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">Chick Type</label>
+                                    <p class="h6">
+                                        <span class="badge bg-info">{{ stock.chick_type|title }}</span>
+                                    </p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">Chick Breed</label>
+                                    <p class="h6">
+                                        <span class="badge bg-success">{{ stock.chick_breed|title }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">Price per Chick</label>
+                                    <p class="h5 text-success">
+                                        <i class="bi bi-currency-dollar"></i>UGX {{ stock.price|floatformat:0 }}
+                                    </p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">Age (Days)</label>
+                                    <p class="h6">{{ stock.chicks_period }} days old</p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">Manager</label>
+                                    <p class="h6">
+                                        <i class="bi bi-person-fill me-1"></i>{{ stock.manager_name }}
+                                    </p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">Date Added</label>
+                                    <p class="h6">
+                                        <i class="bi bi-calendar me-1"></i>{{ stock.date_added|date:"F d, Y \a\t H:i" }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Total Value -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <h5 class="mb-2">
+                                        <i class="bi bi-calculator me-2"></i>Stock Summary
+                                    </h5>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <strong>Total Chicks:</strong> {{ stock.quantity }}
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Price per Chick:</strong> UGX {{ stock.price|floatformat:0 }}
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Total Value:</strong> 
+                                            <span class="text-success fw-bold">
+                                                UGX {{ total_value|floatformat:0 }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'stock_list' %}" class="btn btn-outline-primary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Stock List
+                            </a>
+                            <div>
+                                <a href="{% url 'stock_update' stock.pk %}" class="btn btn-warning me-2">
+                                    <i class="bi bi-pencil me-1"></i>Edit Stock
+                                </a>
+                                <a href="{% url 'stock_delete' stock.pk %}" class="btn btn-danger">
+                                    <i class="bi bi-trash me-1"></i>Delete Stock
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

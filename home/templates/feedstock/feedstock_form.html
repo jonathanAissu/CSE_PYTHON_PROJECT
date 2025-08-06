@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Feedstock - YOUNG4CHICKS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="content-wrapper">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 class="mb-4">
+                            <i class="bi bi-plus-circle me-2"></i>{{ title|default:"Add New Feedstock" }}
+                        </h1>
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="name_of_feeds" class="form-label">
+                                    <i class="bi bi-tag me-1"></i>Feed Name *
+                                </label>
+                                <input type="text" class="form-control" id="name_of_feeds" name="name_of_feeds" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="quantity_of_feeds" class="form-label">
+                                    <i class="bi bi-123 me-1"></i>Quantity (Bags) *
+                                </label>
+                                <input type="number" class="form-control" id="quantity_of_feeds" name="quantity_of_feeds" min="1" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="type_of_feeds" class="form-label">
+                                    <i class="bi bi-grid me-1"></i>Feed Type *
+                                </label>
+                                <select class="form-select" id="type_of_feeds" name="type_of_feeds" required>
+                                    <option value="">Select Feed Type</option>
+                                    <option value="starter">Starter Feed</option>
+                                    <option value="grower">Grower Feed</option>
+                                    <option value="finisher">Finisher Feed</option>
+                                    <option value="layer">Layer Feed</option>
+                                    <option value="broiler">Broiler Feed</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="brand_of_feeds" class="form-label">
+                                    <i class="bi bi-award me-1"></i>Brand *
+                                </label>
+                                <input type="text" class="form-control" id="brand_of_feeds" name="brand_of_feeds" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="unit_price" class="form-label">
+                                    <i class="bi bi-currency-dollar me-1"></i>Unit Price (UGX) *
+                                </label>
+                                <input type="number" class="form-control" id="unit_price" name="unit_price" min="0" step="0.01" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="unit_cost" class="form-label">
+                                    <i class="bi bi-cash me-1"></i>Unit Cost (UGX) *
+                                </label>
+                                <input type="number" class="form-control" id="unit_cost" name="unit_cost" min="0" step="0.01" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="selling_price" class="form-label">
+                                    <i class="bi bi-tag-fill me-1"></i>Selling Price (UGX) *
+                                </label>
+                                <input type="number" class="form-control" id="selling_price" name="selling_price" min="0" step="0.01" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="buying_price" class="form-label">
+                                    <i class="bi bi-cart me-1"></i>Buying Price (UGX) *
+                                </label>
+                                <input type="number" class="form-control" id="buying_price" name="buying_price" min="0" step="0.01" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="supplier_name" class="form-label">
+                                    <i class="bi bi-truck me-1"></i>Supplier Name *
+                                </label>
+                                <input type="text" class="form-control" id="supplier_name" name="supplier_name" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="supplier_contact" class="form-label">
+                                    <i class="bi bi-telephone me-1"></i>Supplier Contact *
+                                </label>
+                                <input type="text" class="form-control" id="supplier_contact" name="supplier_contact" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>Note:</strong> Each farmer is eligible for 2 bags of feeds, payable after 2 months as per YOUNG4CHICKS policy.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'feedstock_list' %}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to Feedstock List
+                                </a>
+                                <div>
+                                    <button type="reset" class="btn btn-outline-warning me-2">
+                                        <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-plus-circle me-2"></i>Add Feedstock
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

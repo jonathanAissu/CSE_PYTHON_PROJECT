@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Request - YOUNG4CHICKS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="content-wrapper">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 class="mb-4">
+                            <i class="bi bi-plus-circle me-2"></i>{{ title|default:"Create New Chick Request" }}
+                        </h1>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Request Policy:</strong> Starter farmers can request up to 100 chicks, returning farmers up to 500 chicks. Requests can be made every 4 months.
+                        </div>
+                        <div class="alert alert-warning">
+                            <i class="bi bi-shield-check me-2"></i>
+                            <strong>Note:</strong> Only approved farmers are shown in the dropdown. If you don't see a farmer, they may still be pending approval.
+                        </div>
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <!-- Farmer Selection -->
+                    <div class="card border-primary mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-person me-2"></i>Select Farmer
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="farmer_id" class="form-label">
+                                    <i class="bi bi-people me-1"></i>Farmer *
+                                </label>
+                                <select class="form-select" id="farmer_id" name="farmer_id" required onchange="updateFarmerInfo()">
+                                    <option value="">Select a farmer</option>
+                                    {% for farmer in farmers %}
+                                    <option value="{{ farmer.pk }}" 
+                                            data-type="{{ farmer.type_of_farmer }}"
+                                            data-age="{{ farmer.farmer_age }}"
+                                            data-phone="{{ farmer.phone_number }}"
+                                            {% if request.GET.farmer_id == farmer.pk|stringformat:"s" %}selected{% endif %}>
+                                        {{ farmer.farmer_name }} ({{ farmer.type_of_farmer|title }}) - {{ farmer.phone_number }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div id="farmer-info" class="alert alert-light" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <strong>Farmer Type:</strong> <span id="farmer-type"></span><br>
+                                        <strong>Age:</strong> <span id="farmer-age"></span> years
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>Phone:</strong> <span id="farmer-phone"></span><br>
+                                        <strong>Chick Limit:</strong> <span id="chick-limit"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chick Details -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="chicks_type" class="form-label">
+                                    <i class="bi bi-egg me-1"></i>Chick Type *
+                                </label>
+                                <select class="form-select" id="chicks_type" name="chicks_type" required>
+                                    <option value="">Select Chick Type</option>
+                                    {% for choice in chick_types %}
+                                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="chicks_breed" class="form-label">
+                                    <i class="bi bi-award me-1"></i>Chick Breed *
+                                </label>
+                                <select class="form-select" id="chicks_breed" name="chicks_breed" required>
+                                    <option value="">Select Chick Breed</option>
+                                    {% for choice in chick_breeds %}
+                                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="quantity" class="form-label">
+                                    <i class="bi bi-123 me-1"></i>Quantity *
+                                </label>
+                                <input type="number" class="form-control" id="quantity" name="quantity" 
+                                       min="1" max="500" required>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Maximum: 100 for starter farmers, 500 for returning farmers
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="chicks_period" class="form-label">
+                                    <i class="bi bi-calendar me-1"></i>Preferred Age (Days) *
+                                </label>
+                                <input type="number" class="form-control" id="chicks_period" name="chicks_period" 
+                                       min="1" max="30" value="1" required>
+                                <div class="form-text">Age in days (1-30 days)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="feeds_needed" class="form-label">
+                            <i class="bi bi-bag me-1"></i>Feeds Needed *
+                        </label>
+                        <select class="form-select" id="feeds_needed" name="feeds_needed" required>
+                            <option value="">Select option</option>
+                            {% for choice in yes_no_choices %}
+                            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">
+                            <i class="bi bi-gift me-1"></i>
+                            Each farmer is eligible for 2 free bags of feeds, payable after 2 months
+                        </div>
+                    </div>
+
+                    <!-- Cost Calculation -->
+                    <div class="card border-success mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-calculator me-2"></i>Cost Calculation
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="text-center">
+                                        <h6>Price per Chick</h6>
+                                        <h4 class="text-success">UGX 1650</h4>
+                                        <small class="text-muted">Fixed price</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-center">
+                                        <h6>Quantity</h6>
+                                        <h4 id="calc-quantity">0</h4>
+                                        <small class="text-muted">Chicks</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-center">
+                                        <h6>Total Cost</h6>
+                                        <h4 class="text-primary" id="total-cost">UGX 0</h4>
+                                        <small class="text-muted">+ 2 free feed bags</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'request_list' %}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to Requests
+                                </a>
+                                <div>
+                                    <button type="reset" class="btn btn-outline-warning me-2">
+                                        <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-plus-circle me-2"></i>Create Request
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    function updateFarmerInfo() {
+        const select = document.getElementById('farmer_id');
+        const selectedOption = select.options[select.selectedIndex];
+        const infoDiv = document.getElementById('farmer-info');
+        
+        if (selectedOption.value) {
+            const type = selectedOption.getAttribute('data-type');
+            const age = selectedOption.getAttribute('data-age');
+            const phone = selectedOption.getAttribute('data-phone');
+            
+            document.getElementById('farmer-type').textContent = type.charAt(0).toUpperCase() + type.slice(1);
+            document.getElementById('farmer-age').textContent = age;
+            document.getElementById('farmer-phone').textContent = phone;
+            
+            const limit = type === 'starter' ? '100 chicks' : 'Up to 500 chicks';
+            document.getElementById('chick-limit').textContent = limit;
+            
+            infoDiv.style.display = 'block';
+            
+            // Update quantity max
+            const quantityInput = document.getElementById('quantity');
+            quantityInput.max = type === 'starter' ? '100' : '500';
+        } else {
+            infoDiv.style.display = 'none';
+        }
+    }
+    
+    function updateCostCalculation() {
+        const quantity = document.getElementById('quantity').value || 0;
+        const pricePerChick = 1650;
+        const totalCost = quantity * pricePerChick;
+        
+        document.getElementById('calc-quantity').textContent = quantity;
+        document.getElementById('total-cost').textContent = 'UGX ' + totalCost.toLocaleString();
+    }
+    
+    // Event listeners
+    document.getElementById('quantity').addEventListener('input', updateCostCalculation);
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateFarmerInfo();
+        updateCostCalculation();
+    });
+</script>
+{% endblock %}
+{% endblock %}

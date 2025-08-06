@@ -1,0 +1,338 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}YOUNG4CHICKS - Urban Brooder for Youth Empowerment{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        padding: 100px 0;
+        color: #343a40;
+        text-align: center;
+    }
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        color: #495057;
+    }
+    .hero-subtitle {
+        font-size: 1.3rem;
+        margin-bottom: 40px;
+        opacity: 0.8;
+        color: #6c757d;
+    }
+    .feature-card {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    .feature-icon {
+        font-size: 3rem;
+        color: #6c757d;
+        margin-bottom: 20px;
+    }
+    .btn-hero {
+        padding: 15px 40px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        margin: 10px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+    .btn-primary-hero {
+        background: #6c757d;
+        color: white;
+        border: none;
+    }
+    .btn-primary-hero:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+    .btn-outline-hero {
+        background: transparent;
+        color: #495057;
+        border: 2px solid #6c757d;
+    }
+    .btn-outline-hero:hover {
+        background: #6c757d;
+        color: white;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+    .stats-section {
+        background: rgba(255, 255, 255, 0.5);
+        padding: 50px 0;
+        margin-top: 50px;
+    }
+    .stat-item {
+        text-align: center;
+        color: #495057;
+    }
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #6c757d;
+    }
+    .stat-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+    .footer-section {
+        background: rgba(0, 0, 0, 0.1);
+        padding: 30px 0;
+        margin-top: 50px;
+        color: #495057;
+        text-align: center;
+    }
+    .modal-content-custom {
+        background: rgba(255, 255, 255, 0.95);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+    }
+    .status-result-hidden {
+        display: none;
+    }
+    /* Override navbar for landing page */
+    .navbar-custom {
+        background: rgba(255,255,255,0.9);
+        position: absolute;
+        width: 100%;
+        z-index: 1000;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h1 class="hero-title">
+                        <i class="bi bi-egg-fried"></i>
+                        YOUNG4CHICKS
+                    </h1>
+                    <p class="hero-subtitle">{{ description|default:"Urban Brooder Empowering Youth (18-30) for Wealth Creation & Economic Involvement" }}</p>
+                    <div class="mt-4">
+                        <a href="{% url 'login' %}" class="btn btn-primary-hero">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Staff Login
+                        </a>
+                        <a href="#" class="btn btn-outline-hero" onclick="checkRegistrationStatus()">
+                            <i class="bi bi-search me-2"></i>Check Registration Status
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="feature-card text-center text-dark">
+                    <i class="bi bi-egg-fried feature-icon"></i>
+                    <h4>Chick Sales on Request</h4>
+                    <p>Selling layers and broilers (local & exotic) at UGx. 1650 per chick. Fixed pricing for all youth farmers.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center text-dark">
+                    <i class="bi bi-person-plus feature-icon"></i>
+                    <h4>Youth Registration (18-30)</h4>
+                    <p>Register young urban dwellers with recommender's NIN. Only registered farmers eligible for requests.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center text-dark">
+                    <i class="bi bi-clipboard-data feature-icon"></i>
+                    <h4>Stock Management</h4>
+                    <p>Brooder Manager records & updates chick stock (number, type, age in days) with real-time tracking.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="feature-card text-center text-dark">
+                    <i class="bi bi-check-circle feature-icon"></i>
+                    <h4>Request Approval System</h4>
+                    <p>Starter farmers get 100 chicks, returning farmers up to 500. Quarterly requests (every 4 months).</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center text-dark">
+                    <i class="bi bi-bag-check feature-icon"></i>
+                    <h4>Feed Package Deal</h4>
+                    <p>Each farmer eligible for 2 bags of feeds, payable after 2 months. Complete package solution.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center text-dark">
+                    <i class="bi bi-telephone feature-icon"></i>
+                    <h4>Sales Rep Support</h4>
+                    <p>3 office-based sales reps handle call-in requests and register sales after manager approval.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number">UGx 1650</div>
+                        <div class="stat-label">Fixed Price Per Chick</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number">100-500</div>
+                        <div class="stat-label">Chicks Per Request</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Months Between Requests</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number">2</div>
+                        <div class="stat-label">Free Feed Bags</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="container text-center py-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="text-dark mb-4">Ready to Get Started?</h2>
+                <p class="text-muted mb-4">Staff can login to manage operations, or farmers can check their registration status.</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{% url 'login' %}" class="btn btn-primary-hero btn-lg">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Staff Login
+                    </a>
+                    <button class="btn btn-outline-hero btn-lg" onclick="checkRegistrationStatus()">
+                        <i class="bi bi-search me-2"></i>Check Registration Status
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><strong>URBAN BROODER FOR YOUTH EMPOWERMENT</strong></h5>
+                    <p class="mb-0">Founded by Youth MP to stimulate wealth creation and economic involvement for urban youth (18-30).</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">© {{ "now"|date:"Y" }} YOUNG4CHICKS. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Registration Status Check Modal -->
+    <div class="modal fade" id="registrationModal" tabindex="-1" aria-labelledby="registrationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registrationModalLabel">
+                        <i class="bi bi-search me-2"></i>Check Registration Status
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registrationForm">
+                        <div class="mb-3">
+                            <label for="farmerNIN" class="form-label">Your NIN Number</label>
+                            <input type="text" class="form-control" id="farmerNIN" placeholder="Enter your NIN number" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="farmerPhone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="farmerPhone" placeholder="Enter your phone number" required>
+                        </div>
+                    </form>
+                    <div id="statusResult" class="mt-3 status-result-hidden"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="checkStatus()">
+                        <i class="bi bi-search me-1"></i>Check Status
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function checkRegistrationStatus() {
+        const modal = new bootstrap.Modal(document.getElementById('registrationModal'));
+        modal.show();
+    }
+
+    function checkStatus() {
+        const nin = document.getElementById('farmerNIN').value;
+        const phone = document.getElementById('farmerPhone').value;
+        const resultDiv = document.getElementById('statusResult');
+        
+        if (!nin || !phone) {
+            resultDiv.innerHTML = '<div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>Please fill in all fields.</div>';
+            resultDiv.classList.remove('status-result-hidden');
+            return;
+        }
+        
+        // Show loading state
+        resultDiv.innerHTML = '<div class="alert alert-info"><i class="bi bi-hourglass-split me-2"></i>Checking registration status...</div>';
+        resultDiv.classList.remove('status-result-hidden');
+        
+        // Simulate API call - you'll need to implement the actual endpoint
+        setTimeout(() => {
+            // This is a placeholder - you'll need to implement the actual check
+            resultDiv.innerHTML = `
+                <div class="alert alert-info">
+                    <h6><i class="bi bi-info-circle me-2"></i>Registration Status Check</h6>
+                    <p class="mb-2"><strong>NIN:</strong> ${nin}</p>
+                    <p class="mb-2"><strong>Phone:</strong> ${phone}</p>
+                    <hr>
+                    <p class="mb-0">
+                        <i class="bi bi-telephone me-2"></i>
+                        Please call our office at <strong>+256-XXX-XXXXXX</strong> or visit our office 
+                        to verify your registration status and submit chick requests.
+                    </p>
+                </div>
+            `;
+        }, 1500);
+    }
+</script>
+{% endblock %}

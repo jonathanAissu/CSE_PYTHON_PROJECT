@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Stock - YOUNG4CHICKS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="content-wrapper">
+                <div class="text-center mb-4">
+                    <i class="bi bi-exclamation-triangle text-danger" style="font-size: 4rem;"></i>
+                    <h2 class="mt-3 text-danger">Confirm Deletion</h2>
+                    <p class="text-muted">This action cannot be undone</p>
+                </div>
+
+                <div class="card border-danger">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-trash me-2"></i>Delete Stock
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-3">Are you sure you want to delete the following stock?</p>
+                        
+                        <div class="alert alert-light">
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Stock Name:</strong><br>
+                                    {{ stock.stock_name }}
+                                </div>
+                                <div class="col-6">
+                                    <strong>Quantity:</strong><br>
+                                    {{ stock.quantity }} chicks
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Type:</strong><br>
+                                    {{ stock.chick_type|title }}
+                                </div>
+                                <div class="col-6">
+                                    <strong>Breed:</strong><br>
+                                    {{ stock.chick_breed|title }}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Manager:</strong><br>
+                                    {{ stock.manager_name }}
+                                </div>
+                                <div class="col-6">
+                                    <strong>Date Added:</strong><br>
+                                    {{ stock.date_added|date:"M d, Y" }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>Warning:</strong> Deleting this stock will permanently remove it from the system. 
+                            Any related records or requests may be affected.
+                        </div>
+                    </div>
+                </div>
+
+                <form method="post" class="mt-4">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'stock_detail' stock.pk %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash me-2"></i>Yes, Delete Stock
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

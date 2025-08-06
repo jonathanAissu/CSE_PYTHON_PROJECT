@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+
+{% block title %}Request Details - YOUNG4CHICKS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="content-wrapper">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h1>
+                                <i class="bi bi-clipboard-data me-2"></i>Request Details
+                            </h1>
+                            {% if request.status == 'pending' and user.is_manager %}
+                            <div class="btn-group">
+                                <form method="post" action="{% url 'request_update_status' request.pk %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="status" value="approved">
+                                    <button type="submit" class="btn btn-success" onclick="return confirm('Approve this request?')">
+                                        <i class="bi bi-check-circle me-1"></i>Approve
+                                    </button>
+                                </form>
+                                <form method="post" action="{% url 'request_update_status' request.pk %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="status" value="rejected">
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Reject this request?')">
+                                        <i class="bi bi-x-circle me-1"></i>Reject
+                                    </button>
+                                </form>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Request Information -->
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header bg-{% if request.status == 'approved' %}success{% elif request.status == 'rejected' %}danger{% else %}warning{% endif %} text-white">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-clipboard-check me-2"></i>Request Information
+                                    <span class="badge bg-light text-dark ms-2">{{ request.status|title }}</span>
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Request Date:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <i class="bi bi-calendar me-1"></i>{{ request.date_time|date:"F d, Y \a\t H:i" }}
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Farmer:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <a href="{% url 'farmer_detail' request.farmer_name.pk %}" class="text-decoration-none">
+                                            <i class="bi bi-person me-1"></i>{{ request.farmer_name.farmer_name }}
+                                        </a>
+                                        <span class="badge bg-{% if request.farmer_name.type_of_farmer == 'starter' %}primary{% else %}secondary{% endif %} ms-2">
+                                            {{ request.farmer_name.type_of_farmer|title }}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Phone Number:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <i class="bi bi-telephone me-1"></i>{{ request.farmer_name.phone_number }}
+                                    </div>
+                                </div>
+                                
+                                <hr>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Chick Type:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span class="badge bg-info">{{ request.chicks_type|title }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Chick Breed:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span class="badge bg-success">{{ request.chicks_breed|title }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Quantity:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span class="badge bg-primary large-badge">{{ request.quantity }} chicks</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Preferred Age:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        {{ request.chicks_period }} days old
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Feeds Needed:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        {% if request.feeds_needed == 'yes' %}
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check me-1"></i>Yes (2 bags included)
+                                        </span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-x me-1"></i>No feeds needed
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Summary & Actions -->
+                    <div class="col-md-4">
+                        <!-- Cost Summary -->
+                        <div class="card mb-3">
+                            <div class="card-header bg-success text-white">
+                                <h6 class="mb-0">
+                                    <i class="bi bi-calculator me-2"></i>Cost Summary
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <div class="mb-2">
+                                        <small class="text-muted">Quantity</small>
+                                        <h5>{{ request.quantity }} chicks</h5>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">Price per chick</small>
+                                        <h5 class="text-success">UGX {{ price_per_chick|floatformat:0 }}</h5>
+                                    </div>
+                                    <hr>
+                                    <div class="mb-2">
+                                        <small class="text-muted">Total Cost</small>
+                                        <h4 class="text-primary">UGX {{ total_cost|floatformat:0 }}</h4>
+                                    </div>
+                                    {% if request.feeds_needed == 'yes' %}
+                                    <div class="alert alert-info mb-0">
+                                        <small>
+                                            <i class="bi bi-gift me-1"></i>
+                                            Includes 2 free feed bags<br>
+                                            <em>Payable after 2 months</em>
+                                        </small>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Status Timeline -->
+                        <div class="card">
+                            <div class="card-header bg-info text-white">
+                                <h6 class="mb-0">
+                                    <i class="bi bi-clock-history me-2"></i>Status Timeline
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="timeline">
+                                    <div class="timeline-item">
+                                        <div class="timeline-marker bg-primary"></div>
+                                        <div class="timeline-content">
+                                            <h6 class="mb-1">Request Created</h6>
+                                            <small class="text-muted">{{ request.date_time|date:"M d, Y H:i" }}</small>
+                                        </div>
+                                    </div>
+                                    
+                                    {% if request.status == 'approved' %}
+                                    <div class="timeline-item">
+                                        <div class="timeline-marker bg-success"></div>
+                                        <div class="timeline-content">
+                                            <h6 class="mb-1">Request Approved</h6>
+                                            <small class="text-muted">Ready for pickup</small>
+                                        </div>
+                                    </div>
+                                    {% elif request.status == 'rejected' %}
+                                    <div class="timeline-item">
+                                        <div class="timeline-marker bg-danger"></div>
+                                        <div class="timeline-content">
+                                            <h6 class="mb-1">Request Rejected</h6>
+                                            <small class="text-muted">Not approved</small>
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <div class="timeline-item">
+                                        <div class="timeline-marker bg-warning"></div>
+                                        <div class="timeline-content">
+                                            <h6 class="mb-1">Pending Approval</h6>
+                                            <small class="text-muted">Awaiting manager review</small>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'request_list' %}" class="btn btn-outline-primary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Requests
+                            </a>
+                            <div>
+                                <a href="{% url 'farmer_detail' request.farmer_name.pk %}" class="btn btn-outline-info me-2">
+                                    <i class="bi bi-person me-1"></i>View Farmer
+                                </a>
+                                {% if request.status == 'pending' and user.is_manager %}
+                                <div class="btn-group">
+                                    <form method="post" action="{% url 'request_update_status' request.pk %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="status" value="approved">
+                                        <button type="submit" class="btn btn-success" onclick="return confirm('Approve this request?')">
+                                            <i class="bi bi-check-circle me-1"></i>Approve
+                                        </button>
+                                    </form>
+                                    <form method="post" action="{% url 'request_update_status' request.pk %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="status" value="rejected">
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Reject this request?')">
+                                            <i class="bi bi-x-circle me-1"></i>Reject
+                                        </button>
+                                    </form>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+    .large-badge {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+    }
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+    .timeline-item {
+        position: relative;
+        margin-bottom: 20px;
+    }
+    .timeline-marker {
+        position: absolute;
+        left: -30px;
+        top: 0;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid white;
+    }
+    .timeline-item:not(:last-child)::before {
+        content: '';
+        position: absolute;
+        left: -24px;
+        top: 12px;
+        width: 2px;
+        height: calc(100% + 8px);
+        background-color: #dee2e6;
+    }
+</style>
+{% endblock %}
+{% endblock %}

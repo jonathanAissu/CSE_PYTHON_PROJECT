@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+
+{% block title %}Farmer Management - YOUNG4CHICKS{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>
+                        <i class="bi bi-people me-2"></i>Farmer Management
+                    </h1>
+                    <a href="{% url 'farmer_create' %}" class="btn btn-primary">
+                        <i class="bi bi-person-plus me-2"></i>Register New Farmer
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <form method="get" class="d-flex">
+                    <input type="text" class="form-control me-2" name="search" 
+                           placeholder="Search by name, NIN, phone, or recommender..." 
+                           value="{{ search_query }}">
+                    <button type="submit" class="btn btn-outline-primary" title="Search">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex justify-content-end gap-2">
+                    <form method="get" class="d-flex">
+                        {% if search_query %}<input type="hidden" name="search" value="{{ search_query }}">{% endif %}
+                        <select name="type" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Farmer Types</option>
+                            {% for choice in farmer_types %}
+                            <option value="{{ choice.0 }}" {% if farmer_type == choice.0 %}selected{% endif %}>
+                                {{ choice.1 }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                    {% if search_query or farmer_type %}
+                    <a href="{% url 'farmer_list' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle me-1"></i>Clear
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Farmer Table -->
+        <div class="card">
+            <div class="card-body">
+                {% if page_obj %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>Type</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                                <th>NIN</th>
+                                <th>Recommender</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for farmer in page_obj %}
+                            <tr>
+                                <td>
+                                    <strong>{{ farmer.farmer_name }}</strong>
+                                </td>
+                                <td>
+                                    <span class="badge bg-{% if farmer.farmer_age >= 18 and farmer.farmer_age <= 30 %}success{% else %}warning{% endif %}">
+                                        {{ farmer.farmer_age }} years
+                                    </span>
+                                </td>
+                                <td>{{ farmer.farmer_gender|title }}</td>
+                                <td>
+                                    <span class="badge bg-{% if farmer.type_of_farmer == 'starter' %}primary{% else %}secondary{% endif %}">
+                                        {{ farmer.type_of_farmer|title }}
+                                    </span>
+                                </td>
+                                <td>{{ farmer.phone_number }}</td>
+                                <td>
+                                    <span class="badge bg-{% if farmer.status == 'approved' %}success{% elif farmer.status == 'rejected' %}danger{% else %}warning{% endif %}">
+                                        {{ farmer.status|title }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <small class="text-muted">{{ farmer.nin }}</small>
+                                </td>
+                                <td>
+                                    <strong>{{ farmer.recommender_name }}</strong><br>
+                                    <small class="text-muted">{{ farmer.recommender_nin }}</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{% url 'farmer_detail' farmer.pk %}" 
+                                           class="btn btn-outline-info" title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        {% if user.is_manager %}
+                                            {% if farmer.status == 'pending' %}
+                                            <button class="btn btn-outline-success" 
+                                                    onclick="approveFarmer({{ farmer.pk }})" title="Approve">
+                                                <i class="bi bi-check-circle"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger" 
+                                                    onclick="rejectFarmer({{ farmer.pk }})" title="Reject">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                            {% endif %}
+                                        {% elif user.is_salesagent %}
+                                            {% if farmer.status == 'approved' %}
+                                            <button class="btn btn-outline-success" 
+                                                    onclick="createRequest({{ farmer.pk }})" title="Create Request">
+                                                <i class="bi bi-plus-circle"></i>
+                                            </button>
+                                            {% else %}
+                                            <span class="badge bg-secondary" title="Farmer must be approved first">
+                                                Awaiting Approval
+                                            </span>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Summary Stats -->
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="alert alert-info">
+                            <div class="row text-center">
+                                <div class="col-md-3">
+                                    <strong>Total Farmers:</strong> {{ page_obj.paginator.count }}
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>Age Range:</strong> 18-30 years
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>Starter Limit:</strong> 100 chicks
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>Returning Limit:</strong> 500 chicks
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+                <nav aria-label="Farmer pagination">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if farmer_type %}&type={{ farmer_type }}{% endif %}">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if farmer_type %}&type={{ farmer_type }}{% endif %}">Previous</a>
+                        </li>
+                        {% endif %}
+
+                        <li class="page-item active">
+                            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                        </li>
+
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if farmer_type %}&type={{ farmer_type }}{% endif %}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if farmer_type %}&type={{ farmer_type }}{% endif %}">Last</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-people icon-large text-muted"></i>
+                    <h4 class="mt-3 text-muted">No Farmers Found</h4>
+                    {% if search_query %}
+                    <p class="text-muted">No farmers match your search for "{{ search_query }}"</p>
+                    <a href="{% url 'farmer_list' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left me-1"></i>View All Farmers
+                    </a>
+                    {% else %}
+                    <p class="text-muted">No farmers have been registered yet.</p>
+                    <a href="{% url 'farmer_create' %}" class="btn btn-primary">
+                        <i class="bi bi-person-plus me-2"></i>Register First Farmer
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+    .icon-large {
+        font-size: 4rem;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function createRequest(farmerId) {
+        // Redirect to create request page with farmer pre-selected
+        window.location.href = "{% url 'request_create' %}?farmer_id=" + farmerId;
+    }
+    
+    function approveFarmer(farmerId) {
+        if (confirm('Are you sure you want to approve this farmer?')) {
+            fetch(`/farmer/${farmerId}/approve/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Error approving farmer: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error);
+            });
+        }
+    }
+    
+    function rejectFarmer(farmerId) {
+        if (confirm('Are you sure you want to reject this farmer?')) {
+            fetch(`/farmer/${farmerId}/reject/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Error rejecting farmer: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error);
+            });
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+
+{% block title %}Manager Dashboard - YOUNG4CHICKS{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">
+                    <i class="bi bi-speedometer2 me-2"></i>Manager Dashboard
+                    <small class="text-muted">Welcome, {{ user.username }}</small>
+                </h1>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-white bg-secondary">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ total_stock }}</h4>
+                                <p class="card-text">Total Chicks</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-egg-fried" style="font-size: 2rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card text-white bg-secondary">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ total_feedstock }}</h4>
+                                <p class="card-text">Feed Bags</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-bag" style="font-size: 2rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card text-white bg-secondary">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ total_farmers }}</h4>
+                                <p class="card-text">Registered Farmers</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-people" style="font-size: 2rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card text-white bg-secondary">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ pending_requests }}</h4>
+                                <p class="card-text">Pending Requests</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-clock" style="font-size: 2rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightning me-2"></i>Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-2">
+                                <a href="{% url 'stock_create' %}" class="btn btn-secondary w-100">
+                                    <i class="bi bi-plus-circle me-2"></i>Add Stock
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <a href="{% url 'feedstock_create' %}" class="btn btn-secondary w-100">
+                                    <i class="bi bi-plus-circle me-2"></i>Add Feedstock
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <a href="{% url 'farmer_list' %}" class="btn btn-secondary w-100">
+                                    <i class="bi bi-people-fill me-2"></i>Approve Farmers
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <a href="{% url 'request_list' %}" class="btn btn-secondary w-100">
+                                    <i class="bi bi-clipboard-check me-2"></i>View Requests
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Recent Stock -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-box-seam me-2"></i>Recent Stock Additions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if recent_stocks %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Stock Name</th>
+                                        <th>Type</th>
+                                        <th>Quantity</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for stock in recent_stocks %}
+                                    <tr>
+                                        <td>{{ stock.stock_name }}</td>
+                                        <td>{{ stock.chick_type }}</td>
+                                        <td>{{ stock.quantity }}</td>
+                                        <td>{{ stock.date_added|date:"M d" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center">
+                            <a href="{% url 'stock_list' %}" class="btn btn-outline-secondary btn-sm">
+                                View All Stock
+                            </a>
+                        </div>
+                        {% else %}
+                        <p class="text-muted text-center">No recent stock additions</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Requests -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clipboard-check me-2"></i>Recent Chick Requests
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if recent_requests %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Farmer</th>
+                                        <th>Type</th>
+                                        <th>Quantity</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for request in recent_requests %}
+                                    <tr>
+                                        <td>{{ request.farmer_name.farmer_name }}</td>
+                                        <td>{{ request.chicks_type }}</td>
+                                        <td>{{ request.quantity }}</td>
+                                        <td>
+                                            <span class="badge bg-{% if request.status == 'approved' %}success{% elif request.status == 'rejected' %}danger{% else %}warning{% endif %}">
+                                                {{ request.status|title }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center">
+                            <a href="{% url 'request_list' %}" class="btn btn-outline-secondary btn-sm">
+                                View All Requests
+                            </a>
+                        </div>
+                        {% else %}
+                        <p class="text-muted text-center">No recent requests</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

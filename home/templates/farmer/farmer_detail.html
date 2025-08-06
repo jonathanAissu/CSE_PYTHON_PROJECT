@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+
+{% block title %}Farmer Details - YOUNG4CHICKS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="content-wrapper">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h1>
+                                <i class="bi bi-person me-2"></i>Farmer Details
+                            </h1>
+                            <a href="{% url 'request_create' %}?farmer_id={{ farmer.pk }}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-2"></i>Create Request
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Farmer Information -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-person-circle me-2"></i>Personal Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Name:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        {{ farmer.farmer_name }}
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Age:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span class="badge bg-{% if farmer.farmer_age >= 18 and farmer.farmer_age <= 30 %}success{% else %}warning{% endif %}">
+                                            {{ farmer.farmer_age }} years
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Gender:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        {{ farmer.farmer_gender|title }}
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Type:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span class="badge bg-{% if farmer.type_of_farmer == 'starter' %}primary{% else %}secondary{% endif %}">
+                                            {{ farmer.type_of_farmer|title }} Farmer
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Phone:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <i class="bi bi-telephone me-1"></i>{{ farmer.phone_number }}
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <strong>NIN:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <code>{{ farmer.nin }}</code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recommender Information -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-warning text-dark">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-person-check me-2"></i>Recommender Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Name:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        {{ farmer.recommender_name }}
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>NIN:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <code>{{ farmer.recommender_nin }}</code>
+                                    </div>
+                                </div>
+                                
+                                <div class="alert alert-info mb-0">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    <small>This recommender vouched for the farmer's registration.</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Eligibility Information -->
+                        <div class="card mt-3">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-check-circle me-2"></i>Eligibility & Limits
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-sm-6">
+                                        <strong>Chick Limit:</strong>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        {% if farmer.type_of_farmer == 'starter' %}
+                                        <span class="badge bg-primary">100 chicks max</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">Up to 500 chicks</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-2">
+                                    <div class="col-sm-6">
+                                        <strong>Price per Chick:</strong>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <span class="text-success fw-bold">UGX 1650</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-2">
+                                    <div class="col-sm-6">
+                                        <strong>Free Feeds:</strong>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <span class="badge bg-success">2 bags</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <strong>Request Frequency:</strong>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <span class="badge bg-info">Every 4 months</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Request History -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-clipboard-data me-2"></i>Request History
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                {% if requests %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Chick Type</th>
+                                                <th>Breed</th>
+                                                <th>Quantity</th>
+                                                <th>Feeds Needed</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for request in requests %}
+                                            <tr>
+                                                <td>{{ request.date_time|date:"M d, Y" }}</td>
+                                                <td>{{ request.chicks_type|title }}</td>
+                                                <td>{{ request.chicks_breed|title }}</td>
+                                                <td>
+                                                    <span class="badge bg-primary">{{ request.quantity }}</span>
+                                                </td>
+                                                <td>
+                                                    {% if request.feeds_needed == 'yes' %}
+                                                    <span class="badge bg-success">Yes</span>
+                                                    {% else %}
+                                                    <span class="badge bg-secondary">No</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-{% if request.status == 'approved' %}success{% elif request.status == 'rejected' %}danger{% else %}warning{% endif %}">
+                                                        {{ request.status|title }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <a href="{% url 'request_detail' request.pk %}" 
+                                                       class="btn btn-outline-info btn-sm" title="View Details">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {% else %}
+                                <div class="text-center py-4">
+                                    <i class="bi bi-clipboard-x text-muted" style="font-size: 3rem;"></i>
+                                    <h5 class="mt-3 text-muted">No Requests Yet</h5>
+                                    <p class="text-muted">This farmer hasn't made any chick requests.</p>
+                                    <a href="{% url 'request_create' %}?farmer_id={{ farmer.pk }}" class="btn btn-primary">
+                                        <i class="bi bi-plus-circle me-2"></i>Create First Request
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'farmer_list' %}" class="btn btn-outline-primary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Farmer List
+                            </a>
+                            <a href="{% url 'request_create' %}?farmer_id={{ farmer.pk }}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-2"></i>Create New Request
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

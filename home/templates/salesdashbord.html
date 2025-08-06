@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+
+{% block title %}Sales Dashboard - YOUNG4CHICKS{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">
+                    <i class="bi bi-graph-up me-2"></i>Sales Dashboard
+                    <small class="text-muted">Welcome, {{ user.username }}</small>
+                </h1>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ total_farmers }}</h4>
+                                <p class="card-text">Total Farmers</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-people" style="font-size: 2rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ pending_requests }}</h4>
+                                <p class="card-text">Pending Requests</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-clock" style="font-size: 2rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ approved_requests }}</h4>
+                                <p class="card-text">Approved Requests</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-check-circle" style="font-size: 2rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ total_requests }}</h4>
+                                <p class="card-text">Total Requests</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-clipboard-data" style="font-size: 2rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightning me-2"></i>Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-2">
+                                <a href="{% url 'farmer_create' %}" class="btn btn-primary w-100">
+                                    <i class="bi bi-person-plus me-2"></i>Register New Farmer
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <a href="{% url 'request_create' %}" class="btn btn-success w-100">
+                                    <i class="bi bi-plus-circle me-2"></i>Create Request
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <a href="{% url 'request_list' %}" class="btn btn-warning w-100">
+                                    <i class="bi bi-clipboard-check me-2"></i>Manage Requests
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Recent Farmers -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-people me-2"></i>Recently Registered Farmers
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if recent_farmers %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Age</th>
+                                        <th>Type</th>
+                                        <th>Phone</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for farmer in recent_farmers %}
+                                    <tr>
+                                        <td>{{ farmer.farmer_name }}</td>
+                                        <td>{{ farmer.farmer_age }}</td>
+                                        <td>
+                                            <span class="badge bg-{% if farmer.type_of_farmer == 'starter' %}primary{% else %}secondary{% endif %}">
+                                                {{ farmer.type_of_farmer|title }}
+                                            </span>
+                                        </td>
+                                        <td>{{ farmer.phone_number }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center">
+                            <a href="{% url 'farmer_list' %}" class="btn btn-outline-primary btn-sm">
+                                View All Farmers
+                            </a>
+                        </div>
+                        {% else %}
+                        <p class="text-muted text-center">No farmers registered yet</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Requests -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clipboard-check me-2"></i>Recent Requests
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if recent_requests %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Farmer</th>
+                                        <th>Type</th>
+                                        <th>Quantity</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for request in recent_requests %}
+                                    <tr>
+                                        <td>{{ request.farmer_name.farmer_name }}</td>
+                                        <td>{{ request.chicks_type }}</td>
+                                        <td>{{ request.quantity }}</td>
+                                        <td>
+                                            <span class="badge bg-{% if request.status == 'approved' %}success{% elif request.status == 'rejected' %}danger{% else %}warning{% endif %}">
+                                                {{ request.status|title }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center">
+                            <a href="{% url 'request_list' %}" class="btn btn-outline-primary btn-sm">
+                                View All Requests
+                            </a>
+                        </div>
+                        {% else %}
+                        <p class="text-muted text-center">No requests yet</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

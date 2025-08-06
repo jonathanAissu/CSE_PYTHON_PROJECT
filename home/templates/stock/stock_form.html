@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if stock %}Edit Stock{% else %}Add Stock{% endif %} - YOUNG4CHICKS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="content-wrapper">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 class="mb-4">
+                            <i class="bi bi-{% if stock %}pencil{% else %}plus-circle{% endif %} me-2"></i>
+                            {{ title|default:"Stock Form" }}
+                        </h1>
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="stock_name" class="form-label">
+                                    <i class="bi bi-tag me-1"></i>Batch no *
+                                </label>
+                                <input type="text" class="form-control" id="stock_name" name="stock_name" 
+                                       value="{{ stock.stock_name|default:'' }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="quantity" class="form-label">
+                                    <i class="bi bi-123 me-1"></i>Quantity *
+                                </label>
+                                <input type="number" class="form-control" id="quantity" name="quantity" 
+                                       value="{{ stock.quantity|default:'' }}" min="1" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="chick_type" class="form-label">
+                                    <i class="bi bi-egg me-1"></i>Chick Type *
+                                </label>
+                                <select class="form-select" id="chick_type" name="chick_type" required>
+                                    <option value="">Select Chick Type</option>
+                                    {% for choice in chick_types %}
+                                    <option value="{{ choice.0 }}" {% if stock.chick_type == choice.0 %}selected{% endif %}>
+                                        {{ choice.1 }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="chick_breed" class="form-label">
+                                    <i class="bi bi-award me-1"></i>Chick Breed *
+                                </label>
+                                <select class="form-select" id="chick_breed" name="chick_breed" required>
+                                    <option value="">Select Chick Breed</option>
+                                    {% for choice in chick_breeds %}
+                                    <option value="{{ choice.0 }}" {% if stock.chick_breed == choice.0 %}selected{% endif %}>
+                                        {{ choice.1 }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="price" class="form-label">
+                                    <i class="bi bi-currency-dollar me-1"></i>Price (UGX) *
+                                </label>
+                                <input type="number" class="form-control" id="price" name="price" 
+                                       value="{{ stock.price|default:'1650' }}" required>
+                                <div class="form-text">Standard price: UGX 1650 per chick</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="chicks_period" class="form-label">
+                                    <i class="bi bi-calendar me-1"></i>Age in Days *
+                                </label>
+                                <input type="number" class="form-control" id="chicks_period" name="chicks_period" 
+                                       value="{{ stock.chicks_period|default:'' }}" min="1" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="manager_name" class="form-label">
+                            <i class="bi bi-person me-1"></i>Manager Name *
+                        </label>
+                        <input type="text" class="form-control" id="manager_name" name="manager_name" 
+                               value="{{ stock.manager_name|default:user.username }}" required>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'stock_list' %}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to Stock List
+                                </a>
+                                <div>
+                                    <button type="reset" class="btn btn-outline-warning me-2">
+                                        <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-{% if stock %}check-circle{% else %}plus-circle{% endif %} me-2"></i>
+                                        {% if stock %}Update Stock{% else %}Add Stock{% endif %}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

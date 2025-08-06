@@ -1,0 +1,298 @@
+{% extends 'base.html' %}
+
+{% block title %}Request Management - YOUNG4CHICKS{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>
+                        <i class="bi bi-clipboard-check me-2"></i>Chick Request Management
+                    </h1>
+                    <a href="{% url 'request_create' %}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Create New Request
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <form method="get" class="d-flex">
+                    <input type="text" class="form-control me-2" name="search" 
+                           placeholder="Search by farmer name, chick type, or breed..." 
+                           value="{{ search_query }}">
+                    <button type="submit" class="btn btn-outline-primary" title="Search">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex justify-content-end gap-2">
+                    <form method="get" class="d-flex">
+                        {% if search_query %}<input type="hidden" name="search" value="{{ search_query }}">{% endif %}
+                        <select name="status" class="form-select" onchange="this.form.submit()" title="Filter by status">
+                            <option value="">All Status</option>
+                            {% for choice in status_choices %}
+                            <option value="{{ choice.0 }}" {% if status == choice.0 %}selected{% endif %}>
+                                {{ choice.1 }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                    {% if search_query or status %}
+                    <a href="{% url 'request_list' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle me-1"></i>Clear
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-white bg-warning">
+                    <div class="card-body text-center">
+                        <i class="bi bi-clock dashboard-icon"></i>
+                        <h4>{{ page_obj.paginator.count }}</h4>
+                        <p class="mb-0">Total Requests</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-info">
+                    <div class="card-body text-center">
+                        <i class="bi bi-hourglass-split dashboard-icon"></i>
+                        <h4>Pending</h4>
+                        <p class="mb-0">Awaiting Approval</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-success">
+                    <div class="card-body text-center">
+                        <i class="bi bi-check-circle dashboard-icon"></i>
+                        <h4>Approved</h4>
+                        <p class="mb-0">Ready for Pickup</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-danger">
+                    <div class="card-body text-center">
+                        <i class="bi bi-x-circle dashboard-icon"></i>
+                        <h4>Rejected</h4>
+                        <p class="mb-0">Not Approved</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Request Table -->
+        <div class="card">
+            <div class="card-body">
+                {% if page_obj %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Date</th>
+                                <th>Farmer</th>
+                                <th>Chick Type</th>
+                                <th>Breed</th>
+                                <th>Quantity</th>
+                                <th>Age (Days)</th>
+                                <th>Feeds</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for request in page_obj %}
+                            <tr>
+                                <td>{{ request.date_time|date:"M d, Y" }}</td>
+                                <td>
+                                    <strong>{{ request.farmer_name.farmer_name }}</strong><br>
+                                    <small class="text-muted">
+                                        <span class="badge bg-{% if request.farmer_name.type_of_farmer == 'starter' %}primary{% else %}secondary{% endif %}">
+                                            {{ request.farmer_name.type_of_farmer|title }}
+                                        </span>
+                                    </small>
+                                </td>
+                                <td>{{ request.chicks_type|title }}</td>
+                                <td>{{ request.chicks_breed|title }}</td>
+                                <td>
+                                    <span class="badge bg-primary">{{ request.quantity }}</span>
+                                </td>
+                                <td>{{ request.chicks_period }} days</td>
+                                <td>
+                                    {% if request.feeds_needed == 'yes' %}
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check me-1"></i>Yes
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">
+                                        <i class="bi bi-x me-1"></i>No
+                                    </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-{% if request.status == 'approved' %}success{% elif request.status == 'rejected' %}danger{% elif request.status == 'sold' %}info{% else %}warning{% endif %}">
+                                        {{ request.status|title }}
+                                    </span>
+                                    {% if request.sales_authorized and request.status == 'sold' %}
+                                    <br><small class="text-muted">by {{ request.sales_authorized_by.username }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{% url 'request_detail' request.pk %}" 
+                                           class="btn btn-outline-info" title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        {% if user.is_manager and request.status == 'pending' %}
+                                        <button class="btn btn-outline-success" 
+                                                onclick="updateStatus({{ request.pk }}, 'approved')" title="Approve">
+                                            <i class="bi bi-check"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger" 
+                                                onclick="updateStatus({{ request.pk }}, 'rejected')" title="Reject">
+                                            <i class="bi bi-x"></i>
+                                        </button>
+                                        {% elif user.is_salesagent and request.status == 'approved' %}
+                                        <button class="btn btn-outline-primary" 
+                                                onclick="authorizeSale({{ request.pk }})" title="Authorize Sale">
+                                            <i class="bi bi-cash-coin"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+                <nav aria-label="Request pagination">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if status %}&status={{ status }}{% endif %}">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status %}&status={{ status }}{% endif %}">Previous</a>
+                        </li>
+                        {% endif %}
+
+                        <li class="page-item active">
+                            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                        </li>
+
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status %}&status={{ status }}{% endif %}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status %}&status={{ status }}{% endif %}">Last</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-clipboard-x icon-large text-muted"></i>
+                    <h4 class="mt-3 text-muted">No Requests Found</h4>
+                    {% if search_query or status %}
+                    <p class="text-muted">No requests match your filters</p>
+                    <a href="{% url 'request_list' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left me-1"></i>View All Requests
+                    </a>
+                    {% else %}
+                    <p class="text-muted">No chick requests have been created yet.</p>
+                    <a href="{% url 'request_create' %}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Create First Request
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+    .icon-large {
+        font-size: 4rem;
+    }
+    .dashboard-icon {
+        font-size: 2rem;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function updateStatus(requestId, status) {
+        if (confirm('Are you sure you want to ' + status + ' this request?')) {
+            // Create a form and submit it
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/requests/' + requestId + '/update-status/';
+            
+            // Add CSRF token
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+            if (csrfToken) {
+                const csrf = document.createElement('input');
+                csrf.type = 'hidden';
+                csrf.name = 'csrfmiddlewaretoken';
+                csrf.value = csrfToken.value;
+                form.appendChild(csrf);
+            }
+            
+            // Add status
+            const statusInput = document.createElement('input');
+            statusInput.type = 'hidden';
+            statusInput.name = 'status';
+            statusInput.value = status;
+            form.appendChild(statusInput);
+            
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+    
+    function authorizeSale(requestId) {
+        if (confirm('Are you sure you want to authorize this sale? This will mark the request as sold.')) {
+            fetch(`/requests/${requestId}/authorize-sale/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Error authorizing sale: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error);
+            });
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %}
