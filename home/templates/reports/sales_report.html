@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sales Report - YOUNG4CHICKS{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .report-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+    }
+    .rep-performance {
+        border-left: 4px solid #28a745;
+        padding-left: 1rem;
+        margin-bottom: 1rem;
+    }
+    .top-performer {
+        border-left: 4px solid #ffc107;
+        background: #fff8dc;
+    }
+    .print-btn {
+        background: #6c757d;
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+    }
+    .print-btn:hover {
+        background: #5a6268;
+    }
+    @media print {
+        .no-print { display: none !important; }
+        .stats-card { 
+            background: #f8f9fa !important; 
+            color: #000 !important; 
+            border: 1px solid #dee2e6 !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header Section -->
+            <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+                <h2>
+                    <i class="bi bi-graph-up text-primary me-2"></i>
+                    Sales Report
+                </h2>
+                <div>
+                    <button onclick="window.print()" class="btn print-btn me-2">
+                        <i class="bi bi-printer me-1"></i>Print Report
+                    </button>
+                    <a href="{% url 'manager_dashboard' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+                    </a>
+                </div>
+            </div>
+
+            <!-- Date Range Filter -->
+            <div class="card report-card no-print">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-calendar-range me-2"></i>Report Period
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="start_date" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" 
+                                   value="{{ start_date|date:'Y-m-d' }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="end_date" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" 
+                                   value="{{ end_date|date:'Y-m-d' }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">&nbsp;</label>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-funnel me-1"></i>Generate Report
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Summary Statistics -->
+            <div class="row mb-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stats-card text-center">
+                        <h3 class="mb-1">{{ total_sales_count }}</h3>
+                        <p class="mb-0">Total Sales</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stats-card text-center">
+                        <h3 class="mb-1">{{ total_chicks_sold|floatformat:0 }}</h3>
+                        <p class="mb-0">Chicks Sold</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stats-card text-center">
+                        <h3 class="mb-1">UGX {{ total_sales_value|floatformat:0 }}</h3>
+                        <p class="mb-0">Total Revenue</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stats-card text-center">
+                        <h3 class="mb-1">{{ active_sales_reps }}</h3>
+                        <p class="mb-0">Active Sales Reps</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Metrics -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card report-card">
+                        <div class="card-body text-center">
+                            <h5 class="text-muted">Average Sale Value</h5>
+                            <h3 class="text-success">UGX {{ average_sale_value|floatformat:0 }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card report-card">
+                        <div class="card-body text-center">
+                            <h5 class="text-muted">Average Chicks per Sale</h5>
+                            <h3 class="text-info">{{ average_chicks_per_sale|floatformat:1 }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Performer Highlight -->
+            {% if top_rep %}
+            <div class="card report-card top-performer">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-trophy text-warning me-2"></i>
+                        Top Performing Sales Representative
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><strong>{{ top_rep.rep_name }}</strong></h6>
+                            <p class="mb-1">Username: {{ top_rep.username }}</p>
+                            <p class="mb-1">Total Sales: <strong>{{ top_rep.total_sales }}</strong></p>
+                            <p class="mb-0">Farmers Served: <strong>{{ top_rep.unique_farmers }}</strong></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1">Chicks Sold: <strong>{{ top_rep.total_chicks }}</strong></p>
+                            <p class="mb-1">Total Revenue: <strong>UGX {{ top_rep.total_value|floatformat:0 }}</strong></p>
+                            <p class="mb-0">Avg per Sale: <strong>UGX {{ top_rep.total_value|div:top_rep.total_sales|floatformat:0 }}</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Sales by Representative -->
+            <div class="card report-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-people me-2"></i>
+                        Sales Performance by Representative
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if sales_by_rep %}
+                    <div class="row">
+                        {% for username, rep_data in sales_by_rep.items %}
+                        <div class="col-lg-6">
+                            <div class="rep-performance">
+                                <h6><strong>{{ rep_data.rep_name }}</strong></h6>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small class="text-muted">Sales:</small> {{ rep_data.total_sales }}<br>
+                                        <small class="text-muted">Chicks:</small> {{ rep_data.total_chicks }}<br>
+                                        <small class="text-muted">Farmers:</small> {{ rep_data.unique_farmers }}
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Revenue:</small> UGX {{ rep_data.total_value|floatformat:0 }}<br>
+                                        <small class="text-muted">Avg/Sale:</small> UGX {{ rep_data.total_value|div:rep_data.total_sales|floatformat:0 }}<br>
+                                        <small class="text-muted">Username:</small> {{ rep_data.username }}
+                                    </div>
+                                </div>
+                                
+                                <!-- Recent Sales Details -->
+                                {% if rep_data.sales_details %}
+                                <div class="mt-3">
+                                    <h6 class="small text-muted">Recent Sales:</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Farmer</th>
+                                                    <th>Type</th>
+                                                    <th>Qty</th>
+                                                    <th>Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for sale in rep_data.sales_details|slice:":5" %}
+                                                <tr>
+                                                    <td>{{ sale.date|date:"M d" }}</td>
+                                                    <td>{{ sale.farmer|truncatechars:15 }}</td>
+                                                    <td>{{ sale.chick_type|slice:":3" }}</td>
+                                                    <td>{{ sale.quantity }}</td>
+                                                    <td>{{ sale.value|floatformat:0 }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-bar-chart text-muted" style="font-size: 3rem;"></i>
+                        <h5 class="text-muted mt-3">No sales data available</h5>
+                        <p class="text-muted">No sales were found for the selected period.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Daily Sales Breakdown -->
+            {% if daily_sales %}
+            <div class="card report-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-calendar-day me-2"></i>
+                        Daily Sales Breakdown
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Sales Count</th>
+                                    <th>Chicks Sold</th>
+                                    <th>Total Value</th>
+                                    <th>Avg per Sale</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for day in daily_sales|slice:":10" %}
+                                <tr>
+                                    <td>{{ day.date|date:"F d, Y" }}</td>
+                                    <td>{{ day.sales_count }}</td>
+                                    <td>{{ day.chicks_sold }}</td>
+                                    <td>UGX {{ day.total_value|floatformat:0 }}</td>
+                                    <td>UGX {{ day.total_value|div:day.sales_count|floatformat:0 }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Report Footer -->
+            <div class="card report-card">
+                <div class="card-body text-center">
+                    <p class="text-muted mb-0">
+                        Report generated on {{ "now"|date:"F d, Y \a\\t g:i A" }} | 
+                        Period: {{ start_date|date:"F d, Y" }} to {{ end_date|date:"F d, Y" }}
+                    </p>
+                    <small class="text-muted">YOUNG4CHICKS Management System</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-submit form when dates change (optional)
+    document.getElementById('start_date').addEventListener('change', function() {
+        // Optional: Auto-submit when date changes
+    });
+    
+    document.getElementById('end_date').addEventListener('change', function() {
+        // Optional: Auto-submit when date changes
+    });
+</script>
+{% endblock %}

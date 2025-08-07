@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete Feedstock - {{ feedstock.name_of_feeds }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Confirm Delete Feedstock
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h6>
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            Are you sure you want to delete this feedstock?
+                        </h6>
+                        <hr>
+                        <p class="mb-0">This action cannot be undone. All data associated with this feedstock will be permanently removed.</p>
+                    </div>
+
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title">Feedstock Details:</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Name:</strong> {{ feedstock.name_of_feeds }}</p>
+                                    <p><strong>Brand:</strong> {{ feedstock.brand_of_feeds }}</p>
+                                    <p><strong>Type:</strong> {{ feedstock.type_of_feeds }}</p>
+                                    <p><strong>Quantity:</strong> {{ feedstock.quantity_of_feeds }} bags</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Supplier:</strong> {{ feedstock.supplier_name }}</p>
+                                    <p><strong>Buying Price:</strong> UGX {{ feedstock.buying_price|floatformat:2 }}</p>
+                                    <p><strong>Selling Price:</strong> UGX {{ feedstock.selling_price|floatformat:2 }}</p>
+                                    <p><strong>Date Added:</strong> {{ feedstock.date|date:"F d, Y" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="{% url 'feedstock_detail' feedstock.pk %}" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left me-1"></i>Cancel
+                                </a>
+                                <form method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-trash me-1"></i>Delete Feedstock
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

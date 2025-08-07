@@ -33,6 +33,9 @@ urlpatterns = [
     path("sales/", views.sales_dashboard, name="sales_dashboard"),
     path("salesagent/", views.sales_dashboard, name="sales_dashboard_alt"),
     
+    # Reports URLs
+    path("reports/sales/", views.sales_report, name="sales_report"),
+    
     # Stock Management URLs
     path("stock/", views.stock_list, name="stock_list"),
     path("stock/create/", views.stock_create, name="stock_create"),
@@ -43,6 +46,9 @@ urlpatterns = [
     # Feedstock Management URLs
     path("feedstock/", views.feedstock_list, name="feedstock_list"),
     path("feedstock/create/", views.feedstock_create, name="feedstock_create"),
+    path("feedstock/<int:pk>/", views.feedstock_detail, name="feedstock_detail"),
+    path("feedstock/<int:pk>/edit/", views.feedstock_update, name="feedstock_update"),
+    path("feedstock/<int:pk>/delete/", views.feedstock_delete, name="feedstock_delete"),
     
     # Farmer Management URLs
     path("farmers/", views.farmer_list, name="farmer_list"),
@@ -61,4 +67,5 @@ urlpatterns = [
     # API URLs
     path("api/farmer/<int:farmer_id>/", views.get_farmer_data, name="api_farmer_data"),
     path("api/dashboard-stats/", views.dashboard_stats_api, name="api_dashboard_stats"),
+    path("api/check-farmer-status/", views.check_farmer_status, name="api_check_farmer_status"),
 ]

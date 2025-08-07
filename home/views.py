@@ -8,6 +8,7 @@ from django.db.models import Q, Count, Sum
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.utils import timezone
+from decimal import Decimal
 from .models import UserProfile, Stock, Feedstock, Farmer, ChickRequest
 from .forms import UserCreation, StockForm, FeedstockForm, FarmerForm, ChickRequestForm
 from django.contrib.auth.forms import AuthenticationForm
@@ -137,9 +138,11 @@ def sales_dashboard(request: HttpRequest) -> HttpResponse:
     total_requests = ChickRequest.objects.count()
     
     # Sales authorized by this user
-    my_sales = ChickRequest.objects.filter(
-        sales_authorized_by=request.user
-    ).count() if request.user.is_salesagent else 0
+    my_sales = 0
+    if request.user.is_authenticated and getattr(request.user, 'is_salesagent', False):
+        my_sales = ChickRequest.objects.filter(
+            sales_authorized_by=request.user
+        ).count()
     
     # Recent farmers
     recent_farmers = Farmer.objects.order_by('-date_registered')[:5]
@@ -306,14 +309,14 @@ def feedstock_create(request):
             feedstock = Feedstock.objects.create(
                 name_of_feeds=request.POST.get('name_of_feeds'),
                 quantity_of_feeds=int(request.POST.get('quantity_of_feeds')),
-                unit_price=float(request.POST.get('unit_price')),
-                unit_cost=float(request.POST.get('unit_cost')),
+                unit_price=Decimal(request.POST.get('unit_price')),
+                unit_cost=Decimal(request.POST.get('unit_cost')),
                 type_of_feeds=request.POST.get('type_of_feeds'),
                 brand_of_feeds=request.POST.get('brand_of_feeds'),
                 supplier_name=request.POST.get('supplier_name'),
                 supplier_contact=request.POST.get('supplier_contact'),
-                selling_price=float(request.POST.get('selling_price')),
-                buying_price=float(request.POST.get('buying_price'))
+                selling_price=Decimal(request.POST.get('selling_price')),
+                buying_price=Decimal(request.POST.get('buying_price'))
             )
             messages.success(request, f'Feedstock "{feedstock.name_of_feeds}" added successfully!')
             return redirect('feedstock_list')
@@ -321,6 +324,65 @@ def feedstock_create(request):
             messages.error(request, f'Error adding feedstock: {str(e)}')
     
     return render(request, 'feedstock/feedstock_form.html', {'title': 'Add New Feedstock'})
+
+@login_required
+def feedstock_detail(request, pk):
+    """Feedstock detail view"""
+    feedstock = get_object_or_404(Feedstock, pk=pk)
+    
+    # Calculate total value and profit
+    total_cost = feedstock.quantity_of_feeds * float(feedstock.buying_price)
+    total_selling_value = feedstock.quantity_of_feeds * float(feedstock.selling_price)
+    potential_profit = total_selling_value - total_cost
+    
+    return render(request, 'feedstock/feedstock_detail.html', {
+        'feedstock': feedstock,
+        'total_cost': total_cost,
+        'total_selling_value': total_selling_value,
+        'potential_profit': potential_profit
+    })
+
+@login_required
+def feedstock_update(request, pk):
+    """Update feedstock entry"""
+    feedstock = get_object_or_404(Feedstock, pk=pk)
+    
+    if request.method == 'POST':
+        try:
+            feedstock.name_of_feeds = request.POST.get('name_of_feeds')
+            feedstock.quantity_of_feeds = int(request.POST.get('quantity_of_feeds'))
+            feedstock.unit_price = Decimal(request.POST.get('unit_price'))
+            feedstock.unit_cost = Decimal(request.POST.get('unit_cost'))
+            feedstock.type_of_feeds = request.POST.get('type_of_feeds')
+            feedstock.brand_of_feeds = request.POST.get('brand_of_feeds')
+            feedstock.supplier_name = request.POST.get('supplier_name')
+            feedstock.supplier_contact = request.POST.get('supplier_contact')
+            feedstock.selling_price = Decimal(request.POST.get('selling_price'))
+            feedstock.buying_price = Decimal(request.POST.get('buying_price'))
+            
+            feedstock.save()
+            messages.success(request, f'Feedstock "{feedstock.name_of_feeds}" updated successfully!')
+            return redirect('feedstock_detail', pk=feedstock.pk)
+        except Exception as e:
+            messages.error(request, f'Error updating feedstock: {str(e)}')
+    
+    return render(request, 'feedstock/feedstock_form.html', {
+        'feedstock': feedstock,
+        'title': 'Update Feedstock'
+    })
+
+@login_required
+def feedstock_delete(request, pk):
+    """Delete feedstock entry"""
+    feedstock = get_object_or_404(Feedstock, pk=pk)
+    
+    if request.method == 'POST':
+        feedstock_name = feedstock.name_of_feeds
+        feedstock.delete()
+        messages.success(request, f'Feedstock "{feedstock_name}" deleted successfully!')
+        return redirect('feedstock_list')
+    
+    return render(request, 'feedstock/feedstock_confirm_delete.html', {'feedstock': feedstock})
 
 # Farmer Management Views
 @login_required
@@ -359,7 +421,7 @@ def farmer_list(request):
 def farmer_create(request):
     """Create new farmer (Sales Agent only)"""
     # Only sales agents can register farmers
-    if not request.user.is_salesagent:
+    if not getattr(request.user, 'is_salesagent', False):
         messages.error(request, 'Only Sales Agents can register farmers.')
         return redirect('farmer_list')
     
@@ -401,7 +463,7 @@ def farmer_detail(request, pk):
 @login_required
 def approve_farmer(request, pk):
     """Approve a farmer (Manager only)"""
-    if not request.user.is_manager:
+    if not getattr(request.user, 'is_manager', False):
         return JsonResponse({'success': False, 'error': 'Unauthorized'}, status=403)
     
     if request.method == 'POST':
@@ -419,7 +481,7 @@ def approve_farmer(request, pk):
 @login_required
 def reject_farmer(request, pk):
     """Reject a farmer (Manager only)"""
-    if not request.user.is_manager:
+    if not getattr(request.user, 'is_manager', False):
         return JsonResponse({'success': False, 'error': 'Unauthorized'}, status=403)
     
     if request.method == 'POST':
@@ -437,7 +499,7 @@ def reject_farmer(request, pk):
 @login_required
 def authorize_sale(request, pk):
     """Authorize sale of approved request (Sales Agent only)"""
-    if not request.user.is_salesagent:
+    if not getattr(request.user, 'is_salesagent', False):
         return JsonResponse({'success': False, 'error': 'Unauthorized - Only Sales Agents can authorize sales'}, status=403)
     
     if request.method == 'POST':
@@ -582,6 +644,82 @@ def get_farmer_data(request: HttpRequest, farmer_id: int) -> JsonResponse:
     except Exception:
         return JsonResponse({'error': 'Farmer not found'}, status=404)
 
+def check_farmer_status(request: HttpRequest) -> JsonResponse:
+    """Check farmer registration status by NIN and phone number"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            nin = data.get('nin', '').strip()
+            phone = data.get('phone', '').strip()
+            
+            if not nin or not phone:
+                return JsonResponse({
+                    'success': False, 
+                    'error': 'Both NIN and phone number are required'
+                }, status=400)
+            
+            # Search for farmer by NIN and phone
+            try:
+                farmer = Farmer.objects.get(nin=nin, phone_number=phone)
+                
+                # Get farmer's request count
+                total_requests = ChickRequest.objects.filter(farmer_name=farmer).count()
+                approved_requests = ChickRequest.objects.filter(farmer_name=farmer, status='approved').count()
+                pending_requests = ChickRequest.objects.filter(farmer_name=farmer, status='pending').count()
+                sold_requests = ChickRequest.objects.filter(farmer_name=farmer, status='sold').count()
+                
+                # Calculate status badge color
+                status_colors = {
+                    'pending': 'warning',
+                    'approved': 'success', 
+                    'rejected': 'danger'
+                }
+                
+                # Get display values manually
+                gender_display = 'Male' if farmer.farmer_gender == 'M' else 'Female'
+                type_display = 'Starter' if farmer.type_of_farmer == 'starter' else 'Returning'
+                status_display = farmer.status.title()
+                
+                return JsonResponse({
+                    'success': True,
+                    'farmer': {
+                        'name': farmer.farmer_name,
+                        'nin': farmer.nin,
+                        'phone': farmer.phone_number,
+                        'age': farmer.farmer_age,
+                        'gender': gender_display,
+                        'type': type_display,
+                        'status': farmer.status,
+                        'status_display': status_display,
+                        'status_color': status_colors.get(farmer.status, 'secondary'),
+                        'date_registered': farmer.date_registered.strftime('%B %d, %Y'),
+                        'recommender_name': farmer.recommender_name,
+                        'total_requests': total_requests,
+                        'approved_requests': approved_requests,
+                        'pending_requests': pending_requests,
+                        'sold_requests': sold_requests
+                    }
+                })
+                
+            except Farmer.DoesNotExist:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'No farmer found with the provided NIN and phone number combination. Please verify your details or contact our office for registration.'
+                })
+                
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'success': False,
+                'error': 'Invalid request format'
+            }, status=400)
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': 'An error occurred while checking registration status'
+            }, status=500)
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
+
 # Dashboard Statistics API
 @login_required
 def dashboard_stats_api(request: HttpRequest) -> JsonResponse:
@@ -595,3 +733,138 @@ def dashboard_stats_api(request: HttpRequest) -> JsonResponse:
         'rejected_requests': ChickRequest.objects.filter(status='rejected').count(),
     }
     return JsonResponse(stats)
+
+@login_required
+def sales_report(request: HttpRequest) -> HttpResponse:
+    """Generate comprehensive sales report (Manager only)"""
+    if not getattr(request.user, 'is_manager', False):
+        messages.error(request, 'Only Managers can access sales reports.')
+        return redirect('manager_dashboard')
+    
+    # Get date range from request (default to last 30 days)
+    from datetime import datetime, timedelta
+    
+    end_date = timezone.now().date()
+    start_date = end_date - timedelta(days=30)
+    
+    start_date_str = request.GET.get('start_date')
+    if start_date_str:
+        try:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+        except ValueError:
+            pass
+    
+    end_date_str = request.GET.get('end_date')
+    if end_date_str:
+        try:
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+        except ValueError:
+            pass
+    
+    # Ensure start_date is not after end_date
+    if start_date > end_date:
+        start_date, end_date = end_date, start_date
+    
+    # Get all sales within date range
+    sales_in_range = ChickRequest.objects.filter(
+        status='sold',
+        sales_authorized_date__date__gte=start_date,
+        sales_authorized_date__date__lte=end_date,
+        sales_authorized_date__isnull=False
+    )
+    
+    # Sales by representative
+    sales_by_rep = {}
+    total_sales_value = 0
+    total_chicks_sold = 0
+    
+    for sale in sales_in_range:
+        if not sale.sales_authorized_date:
+            continue
+            
+        rep_name = sale.sales_authorized_by.username if sale.sales_authorized_by else 'Unknown'
+        rep_full_name = f"{sale.sales_authorized_by.first_name} {sale.sales_authorized_by.last_name}".strip() if sale.sales_authorized_by and (sale.sales_authorized_by.first_name or sale.sales_authorized_by.last_name) else rep_name
+        
+        if rep_name not in sales_by_rep:
+            sales_by_rep[rep_name] = {
+                'rep_name': rep_full_name,
+                'username': rep_name,
+                'total_sales': 0,
+                'total_chicks': 0,
+                'total_value': 0,
+                'farmers_served': set(),
+                'sales_details': []
+            }
+        
+        sale_value = sale.quantity * 1650  # UGX 1650 per chick
+        sales_by_rep[rep_name]['total_sales'] += 1
+        sales_by_rep[rep_name]['total_chicks'] += sale.quantity
+        sales_by_rep[rep_name]['total_value'] += sale_value
+        sales_by_rep[rep_name]['farmers_served'].add(sale.farmer_name.farmer_name)
+        sales_by_rep[rep_name]['sales_details'].append({
+            'date': sale.sales_authorized_date,
+            'farmer': sale.farmer_name.farmer_name,
+            'chick_type': sale.chicks_type,
+            'chick_breed': sale.chicks_breed,
+            'quantity': sale.quantity,
+            'value': sale_value,
+            'request_id': sale.pk
+        })
+        
+        total_sales_value += sale_value
+        total_chicks_sold += sale.quantity
+    
+    # Convert farmers_served sets to counts
+    for rep_data in sales_by_rep.values():
+        rep_data['unique_farmers'] = len(rep_data['farmers_served'])
+        rep_data['farmers_served'] = list(rep_data['farmers_served'])
+    
+    # Sort sales details by date (most recent first)
+    for rep_data in sales_by_rep.values():
+        rep_data['sales_details'].sort(key=lambda x: x['date'], reverse=True)
+    
+    # Overall statistics
+    total_sales_count = sales_in_range.count()
+    active_sales_reps = len(sales_by_rep)
+    
+    # Top performing sales rep
+    top_rep = None
+    if sales_by_rep:
+        top_rep = max(sales_by_rep.values(), key=lambda x: x['total_value'])
+    
+    # Daily sales breakdown
+    daily_sales = {}
+    for sale in sales_in_range:
+        if not sale.sales_authorized_date:
+            continue
+            
+        date_str = sale.sales_authorized_date.strftime('%Y-%m-%d')
+        if date_str not in daily_sales:
+            daily_sales[date_str] = {
+                'date': sale.sales_authorized_date.date(),
+                'sales_count': 0,
+                'chicks_sold': 0,
+                'total_value': 0
+            }
+        daily_sales[date_str]['sales_count'] += 1
+        daily_sales[date_str]['chicks_sold'] += sale.quantity
+        daily_sales[date_str]['total_value'] += sale.quantity * 1650
+    
+    # Convert to sorted list
+    daily_sales_list = sorted(daily_sales.values(), key=lambda x: x['date'], reverse=True)
+    
+    context = {
+        'start_date': start_date,
+        'end_date': end_date,
+        'sales_by_rep': sales_by_rep,
+        'total_sales_count': total_sales_count,
+        'total_chicks_sold': total_chicks_sold,
+        'total_sales_value': total_sales_value,
+        'active_sales_reps': active_sales_reps,
+        'top_rep': top_rep,
+        'daily_sales': daily_sales_list,
+        'average_sale_value': total_sales_value / total_sales_count if total_sales_count > 0 else 0,
+        'average_chicks_per_sale': total_chicks_sold / total_sales_count if total_sales_count > 0 else 0,
+    }
+    
+    return render(request, 'reports/sales_report.html', context)

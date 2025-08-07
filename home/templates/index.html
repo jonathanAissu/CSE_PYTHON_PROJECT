@@ -272,13 +272,16 @@
                 </div>
                 <div class="modal-body">
                     <form id="registrationForm">
+                        {% csrf_token %}
                         <div class="mb-3">
                             <label for="farmerNIN" class="form-label">Your NIN Number</label>
                             <input type="text" class="form-control" id="farmerNIN" placeholder="Enter your NIN number" required>
+                            <div class="form-text">Enter your National Identification Number</div>
                         </div>
                         <div class="mb-3">
                             <label for="farmerPhone" class="form-label">Phone Number</label>
                             <input type="tel" class="form-control" id="farmerPhone" placeholder="Enter your phone number" required>
+                            <div class="form-text">Enter the phone number used during registration</div>
                         </div>
                     </form>
                     <div id="statusResult" class="mt-3 status-result-hidden"></div>
@@ -299,11 +302,14 @@
     function checkRegistrationStatus() {
         const modal = new bootstrap.Modal(document.getElementById('registrationModal'));
         modal.show();
+        // Clear previous results
+        document.getElementById('statusResult').classList.add('status-result-hidden');
+        document.getElementById('registrationForm').reset();
     }
 
-    function checkStatus() {
-        const nin = document.getElementById('farmerNIN').value;
-        const phone = document.getElementById('farmerPhone').value;
+    async function checkStatus() {
+        const nin = document.getElementById('farmerNIN').value.trim();
+        const phone = document.getElementById('farmerPhone').value.trim();
         const resultDiv = document.getElementById('statusResult');
         
         if (!nin || !phone) {
@@ -316,23 +322,134 @@
         resultDiv.innerHTML = '<div class="alert alert-info"><i class="bi bi-hourglass-split me-2"></i>Checking registration status...</div>';
         resultDiv.classList.remove('status-result-hidden');
         
-        // Simulate API call - you'll need to implement the actual endpoint
-        setTimeout(() => {
-            // This is a placeholder - you'll need to implement the actual check
+        try {
+            // Get CSRF token
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                             getCookie('csrftoken');
+            
+            const response = await fetch('/api/check-farmer-status/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: JSON.stringify({
+                    nin: nin,
+                    phone: phone
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                const farmer = data.farmer;
+                resultDiv.innerHTML = `
+                    <div class="alert alert-success">
+                        <h6><i class="bi bi-person-check me-2"></i>Farmer Found!</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-1"><strong>Name:</strong> ${farmer.name}</p>
+                                <p class="mb-1"><strong>Age:</strong> ${farmer.age} years</p>
+                                <p class="mb-1"><strong>Gender:</strong> ${farmer.gender}</p>
+                                <p class="mb-1"><strong>Type:</strong> ${farmer.type}</p>
+                                <p class="mb-1"><strong>Registered:</strong> ${farmer.date_registered}</p>
+                                <p class="mb-1"><strong>Recommender:</strong> ${farmer.recommender_name}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2">
+                                    <strong>Status:</strong> 
+                                    <span class="badge bg-${farmer.status_color} fs-6">${farmer.status_display}</span>
+                                </p>
+                                <hr>
+                                <h6><i class="bi bi-clipboard-data me-2"></i>Request Summary</h6>
+                                <p class="mb-1"><strong>Total Requests:</strong> ${farmer.total_requests}</p>
+                                <p class="mb-1"><strong>Approved:</strong> ${farmer.approved_requests}</p>
+                                <p class="mb-1"><strong>Pending:</strong> ${farmer.pending_requests}</p>
+                                <p class="mb-1"><strong>Completed Sales:</strong> ${farmer.sold_requests}</p>
+                            </div>
+                        </div>
+                        ${getStatusMessage(farmer.status)}
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h6><i class="bi bi-exclamation-triangle me-2"></i>Not Found</h6>
+                        <p class="mb-2">${data.error}</p>
+                        <hr>
+                        <p class="mb-0">
+                            <i class="bi bi-telephone me-2"></i>
+                            For registration or assistance, please call our office at 
+                            <strong>+256-XXX-XXXXXX</strong> or visit our office location.
+                        </p>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Error:', error);
             resultDiv.innerHTML = `
-                <div class="alert alert-info">
-                    <h6><i class="bi bi-info-circle me-2"></i>Registration Status Check</h6>
-                    <p class="mb-2"><strong>NIN:</strong> ${nin}</p>
-                    <p class="mb-2"><strong>Phone:</strong> ${phone}</p>
+                <div class="alert alert-danger">
+                    <h6><i class="bi bi-wifi-off me-2"></i>Connection Error</h6>
+                    <p class="mb-2">Unable to check registration status. Please try again later.</p>
                     <hr>
                     <p class="mb-0">
                         <i class="bi bi-telephone me-2"></i>
-                        Please call our office at <strong>+256-XXX-XXXXXX</strong> or visit our office 
-                        to verify your registration status and submit chick requests.
+                        If the problem persists, please call our office at 
+                        <strong>+256-XXX-XXXXXX</strong>.
                     </p>
                 </div>
             `;
-        }, 1500);
+        }
+    }
+    
+    function getStatusMessage(status) {
+        switch(status) {
+            case 'approved':
+                return `
+                    <hr>
+                    <div class="alert alert-info mb-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Good news!</strong> Your registration is approved. You can submit chick requests 
+                        through our sales representatives.
+                    </div>
+                `;
+            case 'pending':
+                return `
+                    <hr>
+                    <div class="alert alert-warning mb-0">
+                        <i class="bi bi-clock me-2"></i>
+                        <strong>Under Review:</strong> Your registration is being reviewed by our managers. 
+                        You will be notified once approved.
+                    </div>
+                `;
+            case 'rejected':
+                return `
+                    <hr>
+                    <div class="alert alert-danger mb-0">
+                        <i class="bi bi-x-circle me-2"></i>
+                        <strong>Registration Issue:</strong> Please contact our office to resolve any issues 
+                        with your registration.
+                    </div>
+                `;
+            default:
+                return '';
+        }
+    }
+    
+    // Function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
 </script>
 {% endblock %}

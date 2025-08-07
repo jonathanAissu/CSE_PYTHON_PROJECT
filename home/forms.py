@@ -89,16 +89,16 @@ class FarmerForm(ModelForm):
         }
 
 class ChickRequestForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Only show approved farmers
-        self.fields['farmer_name'].queryset = Farmer.objects.filter(status='approved')
+    farmer_name = forms.ModelChoiceField(
+        queryset=Farmer.objects.filter(status='approved'),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        empty_label="Select a farmer"
+    )
     
     class Meta:
         model = ChickRequest
-        exclude = ['status', 'delivered']  # Exclude these fields - they should be set automatically
+        exclude = ['status', 'delivered', 'sales_authorized', 'sales_authorized_by', 'sales_authorized_date']  # Exclude these fields - they should be set automatically
         widgets = {
-            'farmer_name': forms.Select(attrs={'class': 'form-control'}),
             'chicks_type': forms.Select(attrs={'class': 'form-control'}),
             'chicks_breed': forms.Select(attrs={'class': 'form-control'}),
             'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
