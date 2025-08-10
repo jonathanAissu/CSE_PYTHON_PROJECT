@@ -2,17 +2,280 @@
 
 {% block title %}Feedstock Management - YOUNG4CHICKS{% endblock %}
 
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+    }
+    
+    .content-wrapper {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(149, 165, 166, 0.15);
+        margin: 1rem 0;
+        border-left: 4px solid #7f8c8d;
+    }
+    
+    .page-title {
+        color: #2c3e50;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 1rem;
+    }
+    
+    .main-card {
+        background: linear-gradient(135deg, #ecf0f1 0%, #d5dbdb 100%);
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(149, 165, 166, 0.15);
+        border-left: 4px solid #95a5a6;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    
+    .main-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(149, 165, 166, 0.25);
+    }
+    
+    .main-card .card-body {
+        background: transparent;
+        padding: 2rem;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #7f8c8d 0%, #6c797a 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #6c797a 0%, #5a6668 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(127, 140, 141, 0.3);
+        color: white;
+    }
+    
+    .btn-outline-primary {
+        border: 2px solid #7f8c8d;
+        color: #7f8c8d;
+        background: transparent;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-primary:hover {
+        background: linear-gradient(135deg, #7f8c8d 0%, #6c797a 100%);
+        color: white;
+        transform: translateY(-1px);
+        border-color: #6c797a;
+    }
+    
+    .btn-outline-secondary {
+        border: 2px solid #95a5a6;
+        color: #7f8c8d;
+        background: transparent;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-secondary:hover {
+        background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        color: white;
+        transform: translateY(-1px);
+        border-color: #7f8c8d;
+    }
+    
+    .btn-outline-info {
+        border: 2px solid #7f8c8d;
+        color: #7f8c8d;
+        background: transparent;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-info:hover {
+        background: linear-gradient(135deg, #7f8c8d 0%, #6c797a 100%);
+        color: white;
+        border-color: #6c797a;
+    }
+    
+    .btn-outline-warning {
+        border: 2px solid #95a5a6;
+        color: #95a5a6;
+        background: transparent;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-warning:hover {
+        background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        color: white;
+        border-color: #7f8c8d;
+    }
+    
+    .btn-outline-danger {
+        border: 2px solid #c0392b;
+        color: #c0392b;
+        background: transparent;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-danger:hover {
+        background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+        color: white;
+        border-color: #a93226;
+    }
+    
+    .form-control {
+        border: 2px solid #bdc3c7;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+        color: #2c3e50;
+    }
+    
+    .form-control:focus {
+        border-color: #7f8c8d;
+        box-shadow: 0 0 0 0.2rem rgba(127, 140, 141, 0.25);
+        background-color: white;
+    }
+    
+    .table {
+        background-color: transparent;
+        color: #2c3e50;
+    }
+    
+    .table-dark {
+        background: linear-gradient(135deg, #7f8c8d 0%, #6c797a 100%);
+        color: white;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(149, 165, 166, 0.1);
+    }
+    
+    .badge {
+        border-radius: 15px;
+        padding: 0.4rem 0.8rem;
+        font-weight: 500;
+    }
+    
+    .badge.bg-success {
+        background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%) !important;
+        color: white;
+    }
+    
+    .text-success {
+        color: #7f8c8d !important;
+        font-weight: 600;
+    }
+    
+    .text-primary {
+        color: #95a5a6 !important;
+        font-weight: 600;
+    }
+    
+    .empty-state {
+        background: linear-gradient(135deg, #ecf0f1 0%, #d5dbdb 100%);
+        border-radius: 15px;
+        padding: 3rem;
+        text-align: center;
+        border-left: 4px solid #7f8c8d;
+    }
+    
+    .icon-large {
+        font-size: 4rem;
+        color: #95a5a6;
+        opacity: 0.7;
+    }
+    
+    .pagination-wrapper {
+        margin-top: 2rem;
+    }
+    
+    .pagination-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .pagination-btn {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%);
+        border: 2px solid #bdc3c7;
+        color: #7f8c8d;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    
+    .pagination-btn:hover {
+        background: linear-gradient(135deg, #7f8c8d 0%, #6c797a 100%);
+        color: white;
+        border-color: #6c797a;
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+    
+    .pagination-btn.active {
+        background: linear-gradient(135deg, #7f8c8d 0%, #6c797a 100%);
+        color: white;
+        border-color: #6c797a;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .content-wrapper {
+            margin: 0.5rem;
+            padding: 1rem;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+        }
+        
+        .btn-group-sm .btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        
+        .table-responsive {
+            font-size: 0.85rem;
+        }
+        
+        .pagination-buttons {
+            gap: 0.25rem;
+        }
+        
+        .pagination-btn {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.85rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
     <div class="content-wrapper">
         <div class="row">
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1>
-                        <i class="bi bi-bag me-2"></i>Feedstock Management
+                    <h1 class="page-title">
+                        <i class="fas fa-boxes me-2"></i>Feedstock Management
                     </h1>
                     <a href="{% url 'feedstock_create' %}" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-2"></i>Add New Feedstock
+                        <i class="fas fa-plus-circle me-2"></i>Add New Feedstock
                     </a>
                 </div>
             </div>
@@ -26,21 +289,21 @@
                            placeholder="Search by name, brand, type, or supplier..." 
                            value="{{ search_query }}">
                     <button type="submit" class="btn btn-outline-primary" title="Search">
-                        <i class="bi bi-search"></i>
+                        <i class="fas fa-search"></i>
                     </button>
                 </form>
             </div>
             <div class="col-md-6 text-end">
                 {% if search_query %}
                 <a href="{% url 'feedstock_list' %}" class="btn btn-outline-secondary">
-                    <i class="bi bi-x-circle me-1"></i>Clear Search
+                    <i class="fas fa-times-circle me-1"></i>Clear Search
                 </a>
                 {% endif %}
             </div>
         </div>
 
         <!-- Feedstock Table -->
-        <div class="card">
+        <div class="main-card">
             <div class="card-body">
                 {% if page_obj %}
                 <div class="table-responsive">
@@ -79,13 +342,13 @@
                                 <td>
                                     <div class="btn-group btn-group-sm">
                                         <a href="{% url 'feedstock_detail' feedstock.pk %}" class="btn btn-outline-info" title="View Details">
-                                            <i class="bi bi-eye"></i>
+                                            <i class="fas fa-eye"></i>
                                         </a>
                                         <a href="{% url 'feedstock_update' feedstock.pk %}" class="btn btn-outline-warning" title="Edit">
-                                            <i class="bi bi-pencil"></i>
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                         <a href="{% url 'feedstock_delete' feedstock.pk %}" class="btn btn-outline-danger" title="Delete">
-                                            <i class="bi bi-trash"></i>
+                                            <i class="fas fa-trash"></i>
                                         </a>
                                     </div>
                                 </td>
@@ -97,45 +360,33 @@
 
                 <!-- Pagination -->
                 {% if page_obj.has_other_pages %}
-                <nav aria-label="Feedstock pagination">
-                    <ul class="pagination justify-content-center">
+                <div class="pagination-wrapper">
+                    <div class="pagination-buttons">
                         {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}">First</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Previous</a>
-                        </li>
+                        <a class="pagination-btn" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}">First</a>
+                        <a class="pagination-btn" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Previous</a>
                         {% endif %}
-
-                        <li class="page-item active">
-                            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-                        </li>
-
+                        <span class="pagination-btn active">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
                         {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Next</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}">Last</a>
-                        </li>
+                        <a class="pagination-btn" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Next</a>
+                        <a class="pagination-btn" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}">Last</a>
                         {% endif %}
-                    </ul>
-                </nav>
+                    </div>
+                </div>
                 {% endif %}
                 {% else %}
-                <div class="text-center py-5">
-                    <i class="bi bi-bag icon-large text-muted"></i>
+                <div class="empty-state">
+                    <i class="fas fa-boxes icon-large"></i>
                     <h4 class="mt-3 text-muted">No Feedstock Found</h4>
                     {% if search_query %}
                     <p class="text-muted">No feedstock matches your search for "{{ search_query }}"</p>
                     <a href="{% url 'feedstock_list' %}" class="btn btn-outline-primary">
-                        <i class="bi bi-arrow-left me-1"></i>View All Feedstock
+                        <i class="fas fa-arrow-left me-1"></i>View All Feedstock
                     </a>
                     {% else %}
                     <p class="text-muted">No feedstock has been added yet.</p>
                     <a href="{% url 'feedstock_create' %}" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-2"></i>Add First Feedstock
+                        <i class="fas fa-plus-circle me-2"></i>Add First Feedstock
                     </a>
                     {% endif %}
                 </div>
@@ -145,33 +396,36 @@
     </div>
 </div>
 
-{% block extra_css %}
-<style>
-    .icon-large {
-        font-size: 4rem;
-        color: #ccc;
-    }
-</style>
-{% endblock %}
-
 {% block extra_js %}
 <script>
-    function viewFeedstock(id) {
-        // Implement view functionality
-        alert('View feedstock functionality to be implemented');
-    }
-    
-    function editFeedstock(id) {
-        // Implement edit functionality
-        alert('Edit feedstock functionality to be implemented');
-    }
-    
-    function deleteFeedstock(id) {
-        if (confirm('Are you sure you want to delete this feedstock?')) {
-            // Implement delete functionality
-            alert('Delete feedstock functionality to be implemented');
+    // Enhanced feedstock management functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effects to table rows
+        const tableRows = document.querySelectorAll('tbody tr');
+        tableRows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.backgroundColor = 'rgba(149, 165, 166, 0.1)';
+            });
+            row.addEventListener('mouseleave', function() {
+                this.style.backgroundColor = '';
+            });
+        });
+        
+        // Add confirmation for delete actions
+        const deleteButtons = document.querySelectorAll('a[href*="delete"]');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (!confirm('Are you sure you want to delete this feedstock? This action cannot be undone.')) {
+                    e.preventDefault();
+                }
+            });
+        });
+        
+        // Auto-focus search input on page load
+        const searchInput = document.querySelector('input[name="search"]');
+        if (searchInput && !searchInput.value) {
+            searchInput.focus();
         }
-    }
+    });
 </script>
-{% endblock %}
 {% endblock %}

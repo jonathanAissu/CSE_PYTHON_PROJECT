@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,20 +9,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
         body {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: linear-gradient(135deg, #fffef7 0%, #fdf9f0 100%);
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
         .navbar-custom {
-            background: rgba(255,255,255,0.9);
+            background: rgba(248, 249, 250, 0.95);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
+
         .navbar-icon {
             font-size: 1.5rem;
             color: #6c757d;
         }
-        
+
         /* Sidebar Styles */
         .sidebar {
             position: fixed;
@@ -29,33 +33,33 @@
             left: -280px;
             width: 280px;
             height: 100vh;
-            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            background: linear-gradient(135deg, #343a40 0%, #495057 100%);
             transition: all 0.3s ease;
             z-index: 1050;
-            box-shadow: 2px 0 15px rgba(0,0,0,0.1);
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
-        
+
         .sidebar.active {
             left: 0;
         }
-        
+
         .sidebar-header {
             padding: 20px;
-            background: rgba(0,0,0,0.1);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             flex-shrink: 0;
         }
-        
+
         .sidebar-header h3 {
             color: white;
             margin: 0;
             font-size: 1.4rem;
             font-weight: 600;
         }
-        
+
         .sidebar-close {
             position: absolute;
             top: 15px;
@@ -67,102 +71,96 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        
+
         .sidebar-close:hover {
-            color: #ffc107;
+            color: #17a2b8;
             transform: rotate(90deg);
         }
-        
+
         .sidebar-content {
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
         }
-        
+
         .sidebar-content::-webkit-scrollbar {
             width: 6px;
         }
-        
+
         .sidebar-content::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
         }
-        
+
         .sidebar-content::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.3);
+            background: rgba(255, 255, 255, 0.3);
             border-radius: 3px;
         }
-        
+
         .sidebar-content::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,0.5);
+            background: rgba(255, 255, 255, 0.5);
         }
-        
+
         .sidebar-menu {
             padding: 20px 0;
-            list-style: none;
-            margin: 0;
         }
-        
-        .sidebar-menu li {
-            margin: 0;
-        }
-        
-        .sidebar-menu a {
+
+        .sidebar-link {
             display: flex;
             align-items: center;
             padding: 15px 25px;
-            color: rgba(255,255,255,0.8);
+            color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
             transition: all 0.3s ease;
             border-left: 3px solid transparent;
         }
-        
-        .sidebar-menu a:hover {
-            background: rgba(255,255,255,0.1);
+
+        .sidebar-link:hover {
+            background: rgba(255, 255, 255, 0.1);
             color: white;
-            border-left-color: #ffc107;
+            border-left-color: #17a2b8;
             padding-left: 30px;
         }
-        
-        .sidebar-menu a.active {
-            background: rgba(255,255,255,0.15);
+
+        .sidebar-link.active {
+            background: rgba(255, 255, 255, 0.15);
             color: white;
-            border-left-color: #ffc107;
+            border-left-color: #17a2b8;
         }
-        
-        .sidebar-menu i {
+
+        .sidebar-link i {
             margin-right: 15px;
             font-size: 1.2rem;
             width: 20px;
             text-align: center;
         }
-        
+
         .menu-section {
             padding: 10px 25px 5px;
-            color: rgba(255,255,255,0.6);
+            color: rgba(255, 255, 255, 0.6);
             font-size: 0.8rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .sidebar-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 1040;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
         }
-        
+
         .sidebar-overlay.active {
             opacity: 1;
             visibility: visible;
         }
-        
+
         .sidebar-toggle {
             background: none;
             border: none;
@@ -171,203 +169,201 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        
+
         .sidebar-toggle:hover {
             color: #495057;
             transform: scale(1.1);
         }
-        
+
         .main-content {
             transition: all 0.3s ease;
         }
-        
+
         .content-wrapper {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 254, 247, 0.95);
             border-radius: 15px;
             margin: 20px 0;
             padding: 30px;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(160, 146, 122, 0.12);
         }
+
         .card {
             border: none;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(160, 146, 122, 0.08);
+            background: rgba(255, 254, 247, 0.9);
         }
+
         .btn-primary {
-            background: #6c757d;
+            background: #f0e6d6;
             border: none;
+            color: #8a7d68;
         }
+
         .btn-primary:hover {
-            background: #5a6268;
+            background: #e8ddc7;
+            color: #75695a;
         }
+
         .btn-success {
-            background: #6c757d;
+            background: #f0e6d6;
             border: none;
+            color: #8a7d68;
         }
+
         .btn-success:hover {
-            background: #5a6268;
+            background: #e8ddc7;
+            color: #75695a;
         }
+
         .table-responsive {
             border-radius: 15px;
             overflow: hidden;
         }
+
         .alert {
             border-radius: 10px;
         }
-        
+
         /* User Profile in Sidebar */
         .sidebar-user {
             padding: 20px 25px;
-            background: rgba(0,0,0,0.1);
-            border-top: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             margin-top: auto;
         }
-        
+
         .sidebar-user-info {
             display: flex;
             align-items: center;
             color: white;
         }
-        
+
         .sidebar-user-avatar {
             width: 40px;
             height: 40px;
-            background: #ffc107;
+            background: #17a2b8;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 15px;
             font-size: 1.2rem;
-            color: #333;
+            color: white;
         }
-        
+
         .sidebar-user-details h6 {
             margin: 0;
             font-size: 0.9rem;
             font-weight: 600;
         }
-        
+
         .sidebar-user-details small {
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.8rem;
         }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
+
 <body>
     {% if user.is_authenticated %}
     <!-- Sidebar Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-    
+
     <!-- Sidebar -->
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h3><i class="bi bi-egg-fried me-2"></i>YOUNG4CHICKS</h3>
-            <button class="sidebar-close" onclick="toggleSidebar()" title="Close Menu">
-                <i class="bi bi-x-lg"></i>
+            <h3 class="hero-title">
+                <img src="{% static 'home/images/logo.svg' %}" alt="Young4Chicks Logo" class="hero-logo">
+                YOUNG4CHICKS
+            </h3>
             </button>
         </div>
-        
+
         <div class="sidebar-content">
-            <ul class="sidebar-menu">
-                <li class="menu-section">Main Navigation</li>
-                
+            <div class="sidebar-menu">
+                <div class="menu-section">Main Navigation</div>
+
                 {% if user.is_manager %}
-                <li>
-                    <a href="{% url 'manager_dashboard' %}" class="{% if request.resolver_match.url_name == 'manager_dashboard' %}active{% endif %}">
-                        <i class="bi bi-speedometer2"></i>
-                        Manager Dashboard
-                    </a>
-                </li>
-                
-                <li class="menu-section">Stock Management</li>
-                <li>
-                    <a href="{% url 'stock_list' %}" class="{% if 'stock' in request.resolver_match.url_name %}active{% endif %}">
-                        <i class="bi bi-box-seam"></i>
-                        View Stock
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'stock_create' %}">
-                        <i class="bi bi-plus-circle"></i>
-                        Add New Stock
-                    </a>
-                </li>
-                
-                <li class="menu-section">Feed Management</li>
-                <li>
-                    <a href="{% url 'feedstock_list' %}" class="{% if 'feedstock' in request.resolver_match.url_name %}active{% endif %}">
-                        <i class="bi bi-bag"></i>
-                        View Feedstock
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'feedstock_create' %}">
-                        <i class="bi bi-plus-square"></i>
-                        Add Feedstock
-                    </a>
-                </li>
-                
-                <li class="menu-section">Farmer Approval</li>
-                <li>
-                    <a href="{% url 'farmer_list' %}" class="{% if 'farmer' in request.resolver_match.url_name %}active{% endif %}">
-                        <i class="bi bi-people-fill"></i>
-                        Approve Farmers
-                    </a>
-                </li>
+                <a href="{% url 'manager_dashboard' %}"
+                    class="sidebar-link {% if request.resolver_match.url_name == 'manager_dashboard' %}active{% endif %}">
+                    <i class="bi bi-speedometer2"></i>
+                    Manager Dashboard
+                </a>
+
+                <div class="menu-section">Stock Management</div>
+                <a href="{% url 'stock_list' %}"
+                    class="sidebar-link {% if 'stock' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="bi bi-box-seam"></i>
+                    View Stock
+                </a>
+                <a href="{% url 'stock_create' %}" class="sidebar-link">
+                    <i class="bi bi-plus-circle"></i>
+                    Add New Stock
+                </a>
+
+                <div class="menu-section">Feed Management</div>
+                <a href="{% url 'feedstock_list' %}"
+                    class="sidebar-link {% if 'feedstock' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="bi bi-bag"></i>
+                    View Feedstock
+                </a>
+                <a href="{% url 'feedstock_create' %}" class="sidebar-link">
+                    <i class="bi bi-plus-square"></i>
+                    Add Feedstock
+                </a>
+
+                <div class="menu-section">Farmer Approval</div>
+                <a href="{% url 'farmer_list' %}"
+                    class="sidebar-link {% if 'farmer' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="bi bi-people-fill"></i>
+                    Approve Farmers
+                </a>
                 {% endif %}
-                
+
                 {% if user.is_salesagent %}
-                <li>
-                    <a href="{% url 'sales_dashboard' %}" class="{% if request.resolver_match.url_name == 'sales_dashboard' %}active{% endif %}">
-                        <i class="bi bi-graph-up"></i>
-                        Sales Dashboard
-                    </a>
-                </li>
-                
-                <li class="menu-section">Farmer Management</li>
-                <li>
-                    <a href="{% url 'farmer_list' %}" class="{% if 'farmer' in request.resolver_match.url_name %}active{% endif %}">
-                        <i class="bi bi-people"></i>
-                        View Farmers
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'farmer_create' %}">
-                        <i class="bi bi-person-plus"></i>
-                        Register Farmer
-                    </a>
-                </li>
-                
-                <li class="menu-section">Request Management</li>
-                <li>
-                    <a href="{% url 'request_list' %}" class="{% if 'request' in request.resolver_match.url_name %}active{% endif %}">
-                        <i class="bi bi-clipboard-check"></i>
-                        View Requests
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'request_create' %}">
-                        <i class="bi bi-clipboard-plus"></i>
-                        Create Request
-                    </a>
-                </li>
+                <a href="{% url 'sales_dashboard' %}"
+                    class="sidebar-link {% if request.resolver_match.url_name == 'sales_dashboard' %}active{% endif %}">
+                    <i class="bi bi-graph-up"></i>
+                    Sales Dashboard
+                </a>
+
+                <div class="menu-section">Farmer Management</div>
+                <a href="{% url 'farmer_list' %}"
+                    class="sidebar-link {% if 'farmer' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="bi bi-people"></i>
+                    View Farmers
+                </a>
+                <a href="{% url 'farmer_create' %}" class="sidebar-link">
+                    <i class="bi bi-person-plus"></i>
+                    Register Farmer
+                </a>
+
+                <div class="menu-section">Request Management</div>
+                <a href="{% url 'request_list' %}"
+                    class="sidebar-link {% if 'request' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="bi bi-clipboard-check"></i>
+                    View Requests
+                </a>
+                <a href="{% url 'request_create' %}" class="sidebar-link">
+                    <i class="bi bi-clipboard-plus"></i>
+                    Create Request
+                </a>
                 {% endif %}
-                
+
                 {% if user.is_superuser %}
-                <li class="menu-section">Administration</li>
-                <li>
-                    <a href="/admin/" target="_blank">
-                        <i class="bi bi-gear"></i>
-                        Admin Panel
-                    </a>
-                </li>
+                <div class="menu-section">Administration</div>
+                <a href="/admin/" target="_blank" class="sidebar-link">
+                    <i class="bi bi-gear"></i>
+                    Admin Panel
+                </a>
                 {% endif %}
-            </ul>
+            </div>
         </div>
-        
+
         <!-- User Profile Section -->
         <div class="sidebar-user">
             <div class="sidebar-user-info">
@@ -377,7 +373,8 @@
                 <div class="sidebar-user-details">
                     <h6>{{ user.username }}</h6>
                     <small>
-                        {% if user.is_manager %}Manager{% elif user.is_salesagent %}Sales Agent{% else %}Admin{% endif %}
+                        {% if user.is_manager %}Manager{% elif user.is_salesagent %}Sales Agent{% else %}Admin{% endif
+                        %}
                     </small>
                 </div>
             </div>
@@ -398,12 +395,12 @@
                 <i class="bi bi-list"></i>
             </button>
             {% endif %}
-            
+
             <a class="navbar-brand d-flex align-items-center text-dark" href="{% url 'home' %}">
                 <i class="bi bi-egg-fried me-2 navbar-icon"></i>
                 <strong>YOUNG4CHICKS</strong>
             </a>
-            
+
             {% if not user.is_authenticated %}
             <div class="navbar-nav ms-auto">
                 <a href="{% url 'login' %}" class="nav-link text-dark">
@@ -423,49 +420,51 @@
     <!-- Main Content -->
     <div class="main-content">
         <div class="container-fluid">
-        <!-- Messages -->
-        {% if messages %}
-        <div class="row mt-3">
-            <div class="col-12">
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    <i class="bi bi-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <!-- Messages -->
+            {% if messages %}
+            <div class="row mt-3">
+                <div class="col-12">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        <i
+                            class="bi bi-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close alert"
+                            title="Close"></button>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
-        </div>
-        {% endif %}
+            {% endif %}
 
-        {% block content %}{% endblock %}
+            {% block content %}{% endblock %}
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
-            
+
             if (sidebar && overlay) {
                 sidebar.classList.toggle('active');
                 overlay.classList.toggle('active');
             }
         }
-        
+
         // Close sidebar when clicking on overlay
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const overlay = document.getElementById('sidebarOverlay');
             if (overlay) {
-                overlay.addEventListener('click', function() {
+                overlay.addEventListener('click', function () {
                     toggleSidebar();
                 });
             }
-            
+
             // Close sidebar on escape key
-            document.addEventListener('keydown', function(event) {
+            document.addEventListener('keydown', function (event) {
                 if (event.key === 'Escape') {
                     const sidebar = document.getElementById('sidebar');
                     const overlay = document.getElementById('sidebarOverlay');
@@ -474,10 +473,10 @@
                     }
                 }
             });
-            
+
             // Auto-highlight current page in sidebar
             const currentPath = window.location.pathname;
-            const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
             sidebarLinks.forEach(link => {
                 if (link.getAttribute('href') === currentPath) {
                     link.classList.add('active');
@@ -485,7 +484,8 @@
             });
         });
     </script>
-    
+
     {% block extra_js %}{% endblock %}
 </body>
+
 </html>

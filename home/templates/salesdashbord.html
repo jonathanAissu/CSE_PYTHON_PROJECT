@@ -2,6 +2,132 @@
 
 {% block title %}Sales Dashboard - YOUNG4CHICKS{% endblock %}
 
+{% block extra_css %}
+<style>
+    .dashboard-card {
+        background-color: #f8f9fa;
+        border: none;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .dashboard-card.border-info {
+        border-left: 5px solid #17a2b8 !important;
+    }
+    
+    .dashboard-card.border-warning {
+        border-left: 5px solid #ffc107 !important;
+    }
+    
+    .dashboard-card.border-success {
+        border-left: 5px solid #28a745 !important;
+    }
+    
+    .dashboard-card.border-primary {
+        border-left: 5px solid #007bff !important;
+    }
+    
+    .dashboard-card .card-title {
+        color: #495057;
+        font-weight: 600;
+    }
+    
+    .dashboard-card .card-text {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .dashboard-card .card-icon {
+        color: #6c757d;
+        transition: color 0.3s ease;
+        font-size: 2rem;
+    }
+    
+    .dashboard-card.border-info:hover .card-icon {
+        color: #17a2b8;
+    }
+    
+    .dashboard-card.border-warning:hover .card-icon {
+        color: #ffc107;
+    }
+    
+    .dashboard-card.border-success:hover .card-icon {
+        color: #28a745;
+    }
+    
+    .dashboard-card.border-primary:hover .card-icon {
+        color: #007bff;
+    }
+    
+    .action-btn {
+        background-color: #f8f9fa;
+        border: none;
+        border-radius: 10px;
+        padding: 1rem;
+        text-decoration: none;
+        color: #495057;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: block;
+        text-align: center;
+    }
+    
+    .action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        color: #495057;
+        text-decoration: none;
+    }
+    
+    .action-btn.btn-primary-custom {
+        border-left: 5px solid #007bff;
+    }
+    
+    .action-btn.btn-success-custom {
+        border-left: 5px solid #28a745;
+    }
+    
+    .action-btn.btn-warning-custom {
+        border-left: 5px solid #ffc107;
+    }
+    
+    .action-btn.btn-primary-custom:hover {
+        border-left-color: #0056b3;
+    }
+    
+    .action-btn.btn-success-custom:hover {
+        border-left-color: #1e7e34;
+    }
+    
+    .action-btn.btn-warning-custom:hover {
+        border-left-color: #e0a800;
+    }
+    
+    .action-btn i {
+        color: #6c757d;
+        transition: color 0.3s ease;
+    }
+    
+    .action-btn.btn-primary-custom:hover i {
+        color: #007bff;
+    }
+    
+    .action-btn.btn-success-custom:hover i {
+        color: #28a745;
+    }
+    
+    .action-btn.btn-warning-custom:hover i {
+        color: #ffc107;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
     <div class="content-wrapper">
@@ -14,10 +140,9 @@
             </div>
         </div>
 
-        <!-- Statistics Cards -->
         <div class="row mb-4">
             <div class="col-md-3">
-                <div class="card text-white bg-info">
+                <div class="card dashboard-card border-info">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
@@ -25,7 +150,7 @@
                                 <p class="card-text">Total Farmers</p>
                             </div>
                             <div class="align-self-center">
-                                <i class="bi bi-people" style="font-size: 2rem;"></i>
+                                <i class="bi bi-people card-icon"></i>
                             </div>
                         </div>
                     </div>
@@ -33,7 +158,7 @@
             </div>
             
             <div class="col-md-3">
-                <div class="card text-white bg-warning">
+                <div class="card dashboard-card border-warning">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
@@ -41,7 +166,7 @@
                                 <p class="card-text">Pending Requests</p>
                             </div>
                             <div class="align-self-center">
-                                <i class="bi bi-clock" style="font-size: 2rem;"></i>
+                                <i class="bi bi-clock card-icon"></i>
                             </div>
                         </div>
                     </div>
@@ -49,7 +174,7 @@
             </div>
             
             <div class="col-md-3">
-                <div class="card text-white bg-success">
+                <div class="card dashboard-card border-success">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
@@ -57,7 +182,7 @@
                                 <p class="card-text">Approved Requests</p>
                             </div>
                             <div class="align-self-center">
-                                <i class="bi bi-check-circle" style="font-size: 2rem;"></i>
+                                <i class="bi bi-check-circle card-icon"></i>
                             </div>
                         </div>
                     </div>
@@ -65,7 +190,7 @@
             </div>
             
             <div class="col-md-3">
-                <div class="card text-white bg-primary">
+                <div class="card dashboard-card border-primary">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
@@ -73,7 +198,7 @@
                                 <p class="card-text">Total Requests</p>
                             </div>
                             <div class="align-self-center">
-                                <i class="bi bi-clipboard-data" style="font-size: 2rem;"></i>
+                                <i class="bi bi-clipboard-data card-icon"></i>
                             </div>
                         </div>
                     </div>
@@ -93,17 +218,17 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 mb-2">
-                                <a href="{% url 'farmer_create' %}" class="btn btn-primary w-100">
+                                <a href="{% url 'farmer_create' %}" class="action-btn btn-primary-custom">
                                     <i class="bi bi-person-plus me-2"></i>Register New Farmer
                                 </a>
                             </div>
                             <div class="col-md-4 mb-2">
-                                <a href="{% url 'request_create' %}" class="btn btn-success w-100">
+                                <a href="{% url 'request_create' %}" class="action-btn btn-success-custom">
                                     <i class="bi bi-plus-circle me-2"></i>Create Request
                                 </a>
                             </div>
                             <div class="col-md-4 mb-2">
-                                <a href="{% url 'request_list' %}" class="btn btn-warning w-100">
+                                <a href="{% url 'request_list' %}" class="action-btn btn-warning-custom">
                                     <i class="bi bi-clipboard-check me-2"></i>Manage Requests
                                 </a>
                             </div>

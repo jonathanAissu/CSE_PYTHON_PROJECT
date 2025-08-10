@@ -2,17 +2,321 @@
 
 {% block title %}Request Management - YOUNG4CHICKS{% endblock %}
 
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+    }
+    
+    .content-wrapper {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(149, 165, 166, 0.15);
+        margin: 1rem 0;
+        border-left: 4px solid #7f8c8d;
+    }
+    
+    .page-title {
+        color: #2c3e50;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 1rem;
+    }
+    
+    .icon-large {
+        font-size: 4rem;
+    }
+    
+    .dashboard-icon {
+        font-size: 2rem;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stats-card {
+        background: linear-gradient(135deg, #ecf0f1 0%, #d5dbdb 100%);
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(149, 165, 166, 0.15);
+        margin-bottom: 1rem;
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(149, 165, 166, 0.25);
+    }
+    
+    .stats-card.total-requests {
+        border-left: 4px solid #f39c12;
+    }
+    
+    .stats-card.pending-requests {
+        border-left: 4px solid #7f8c8d;
+    }
+    
+    .stats-card.approved-requests {
+        border-left: 4px solid #95a5a6;
+    }
+    
+    .stats-card.rejected-requests {
+        border-left: 4px solid #c0392b;
+    }
+    
+    .stats-card .card-body {
+        background: transparent;
+        color: #2c3e50;
+        padding: 1.5rem;
+    }
+    
+    .stats-card h4 {
+        color: #2c3e50;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stats-card p {
+        color: #7f8c8d;
+        font-weight: 500;
+    }
+    
+    .stats-card .dashboard-icon {
+        color: #95a5a6;
+        opacity: 0.8;
+    }
+    
+    .stats-card.total-requests .dashboard-icon {
+        color: #f39c12;
+    }
+    
+    .stats-card.pending-requests .dashboard-icon {
+        color: #7f8c8d;
+    }
+    
+    .stats-card.approved-requests .dashboard-icon {
+        color: #95a5a6;
+    }
+    
+    .stats-card.rejected-requests .dashboard-icon {
+        color: #c0392b;
+    }
+    
+    .main-card {
+        background: linear-gradient(135deg, #ecf0f1 0%, #d5dbdb 100%);
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(149, 165, 166, 0.15);
+        border-left: 4px solid #95a5a6;
+        transition: all 0.3s ease;
+    }
+    
+    .main-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(149, 165, 166, 0.25);
+    }
+    
+    .main-card .card-body {
+        background: transparent;
+        padding: 2rem;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #7f8c8d 0%, #6c797a 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #6c797a 0%, #5a6668 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(127, 140, 141, 0.3);
+        color: white;
+    }
+    
+    .btn-outline-primary {
+        border: 2px solid #7f8c8d;
+        color: #7f8c8d;
+        background: transparent;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-primary:hover {
+        background: linear-gradient(135deg, #7f8c8d 0%, #6c797a 100%);
+        color: white;
+        transform: translateY(-1px);
+        border-color: #6c797a;
+    }
+    
+    .btn-outline-secondary {
+        border: 2px solid #95a5a6;
+        color: #7f8c8d;
+        background: transparent;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-secondary:hover {
+        background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        color: white;
+        transform: translateY(-1px);
+        border-color: #7f8c8d;
+    }
+    
+    .btn-outline-info {
+        border: 2px solid #7f8c8d;
+        color: #7f8c8d;
+        background: transparent;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-info:hover {
+        background: linear-gradient(135deg, #7f8c8d 0%, #6c797a 100%);
+        color: white;
+        border-color: #6c797a;
+    }
+    
+    .btn-outline-success {
+        border: 2px solid #95a5a6;
+        color: #95a5a6;
+        background: transparent;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-success:hover {
+        background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        color: white;
+        border-color: #7f8c8d;
+    }
+    
+    .btn-outline-danger {
+        border: 2px solid #c0392b;
+        color: #c0392b;
+        background: transparent;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-danger:hover {
+        background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+        color: white;
+        border-color: #a93226;
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid #bdc3c7;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+        color: #2c3e50;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #7f8c8d;
+        box-shadow: 0 0 0 0.2rem rgba(127, 140, 141, 0.25);
+        background-color: white;
+    }
+    
+    .table {
+        background-color: transparent;
+        color: #2c3e50;
+    }
+    
+    .table-dark {
+        background: linear-gradient(135deg, #7f8c8d 0%, #6c797a 100%);
+        color: white;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(149, 165, 166, 0.1);
+    }
+    
+    .badge {
+        border-radius: 15px;
+        padding: 0.4rem 0.8rem;
+        font-weight: 500;
+    }
+    
+    .empty-state {
+        background: linear-gradient(135deg, #ecf0f1 0%, #d5dbdb 100%);
+        border-radius: 15px;
+        padding: 3rem;
+        text-align: center;
+        border-left: 4px solid #7f8c8d;
+    }
+    
+    .pagination {
+        margin-top: 2rem;
+    }
+    
+    .pagination .page-link {
+        color: #7f8c8d;
+        border: 1px solid #bdc3c7;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+        border-radius: 6px;
+        margin: 0 2px;
+    }
+    
+    .pagination .page-link:hover {
+        color: white;
+        background: linear-gradient(135deg, #7f8c8d 0%, #6c797a 100%);
+        border-color: #6c797a;
+    }
+    
+    .pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, #7f8c8d 0%, #6c797a 100%);
+        border-color: #6c797a;
+        color: white;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .content-wrapper {
+            margin: 0.5rem;
+            padding: 1rem;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+        }
+        
+        .stats-card {
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn-group-sm .btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        
+        .table-responsive {
+            font-size: 0.85rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
     <div class="content-wrapper">
         <div class="row">
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1>
-                        <i class="bi bi-clipboard-check me-2"></i>Chick Request Management
+                    <h1 class="page-title">
+                        <i class="fas fa-clipboard-check me-2"></i>Chick Request Management
                     </h1>
                     <a href="{% url 'request_create' %}" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-2"></i>Create New Request
+                        <i class="fas fa-plus-circle me-2"></i>Create New Request
                     </a>
                 </div>
             </div>
@@ -26,7 +330,7 @@
                            placeholder="Search by farmer name, chick type, or breed..." 
                            value="{{ search_query }}">
                     <button type="submit" class="btn btn-outline-primary" title="Search">
-                        <i class="bi bi-search"></i>
+                        <i class="fas fa-search"></i>
                     </button>
                 </form>
             </div>
@@ -45,7 +349,7 @@
                     </form>
                     {% if search_query or status %}
                     <a href="{% url 'request_list' %}" class="btn btn-outline-secondary">
-                        <i class="bi bi-x-circle me-1"></i>Clear
+                        <i class="fas fa-times-circle me-1"></i>Clear
                     </a>
                     {% endif %}
                 </div>
@@ -55,36 +359,36 @@
         <!-- Quick Stats -->
         <div class="row mb-4">
             <div class="col-md-3">
-                <div class="card text-white bg-warning">
+                <div class="card stats-card total-requests">
                     <div class="card-body text-center">
-                        <i class="bi bi-clock dashboard-icon"></i>
+                        <i class="fas fa-clock dashboard-icon"></i>
                         <h4>{{ page_obj.paginator.count }}</h4>
                         <p class="mb-0">Total Requests</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card text-white bg-info">
+                <div class="card stats-card pending-requests">
                     <div class="card-body text-center">
-                        <i class="bi bi-hourglass-split dashboard-icon"></i>
+                        <i class="fas fa-hourglass-half dashboard-icon"></i>
                         <h4>Pending</h4>
                         <p class="mb-0">Awaiting Approval</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card text-white bg-success">
+                <div class="card stats-card approved-requests">
                     <div class="card-body text-center">
-                        <i class="bi bi-check-circle dashboard-icon"></i>
+                        <i class="fas fa-check-circle dashboard-icon"></i>
                         <h4>Approved</h4>
                         <p class="mb-0">Ready for Pickup</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card text-white bg-danger">
+                <div class="card stats-card rejected-requests">
                     <div class="card-body text-center">
-                        <i class="bi bi-x-circle dashboard-icon"></i>
+                        <i class="fas fa-times-circle dashboard-icon"></i>
                         <h4>Rejected</h4>
                         <p class="mb-0">Not Approved</p>
                     </div>
@@ -93,7 +397,7 @@
         </div>
 
         <!-- Request Table -->
-        <div class="card">
+        <div class="card main-card">
             <div class="card-body">
                 {% if page_obj %}
                 <div class="table-responsive">
@@ -132,11 +436,11 @@
                                 <td>
                                     {% if request.feeds_needed == 'yes' %}
                                     <span class="badge bg-success">
-                                        <i class="bi bi-check me-1"></i>Yes
+                                        <i class="fas fa-check me-1"></i>Yes
                                     </span>
                                     {% else %}
                                     <span class="badge bg-secondary">
-                                        <i class="bi bi-x me-1"></i>No
+                                        <i class="fas fa-times me-1"></i>No
                                     </span>
                                     {% endif %}
                                 </td>
@@ -152,21 +456,29 @@
                                     <div class="btn-group btn-group-sm">
                                         <a href="{% url 'request_detail' request.pk %}" 
                                            class="btn btn-outline-info" title="View Details">
-                                            <i class="bi bi-eye"></i>
+                                            <i class="fas fa-eye"></i>
                                         </a>
                                         {% if user.is_manager and request.status == 'pending' %}
                                         <button class="btn btn-outline-success" 
-                                                onclick="updateStatus({{ request.pk }}, 'approved')" title="Approve">
-                                            <i class="bi bi-check"></i>
+                                                data-request-id="{{ request.pk }}" 
+                                                data-action="approve" 
+                                                onclick="updateRequestStatus(this)" 
+                                                title="Approve">
+                                            <i class="fas fa-check"></i>
                                         </button>
                                         <button class="btn btn-outline-danger" 
-                                                onclick="updateStatus({{ request.pk }}, 'rejected')" title="Reject">
-                                            <i class="bi bi-x"></i>
+                                                data-request-id="{{ request.pk }}" 
+                                                data-action="reject" 
+                                                onclick="updateRequestStatus(this)" 
+                                                title="Reject">
+                                            <i class="fas fa-times"></i>
                                         </button>
                                         {% elif user.is_salesagent and request.status == 'approved' %}
                                         <button class="btn btn-outline-primary" 
-                                                onclick="authorizeSale({{ request.pk }})" title="Authorize Sale">
-                                            <i class="bi bi-cash-coin"></i>
+                                                data-request-id="{{ request.pk }}" 
+                                                onclick="authorizeSaleRequest(this)" 
+                                                title="Authorize Sale">
+                                            <i class="fas fa-cash-register"></i>
                                         </button>
                                         {% endif %}
                                     </div>
@@ -179,45 +491,35 @@
 
                 <!-- Pagination -->
                 {% if page_obj.has_other_pages %}
-                <nav aria-label="Request pagination">
-                    <ul class="pagination justify-content-center">
-                        {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if status %}&status={{ status }}{% endif %}">First</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status %}&status={{ status }}{% endif %}">Previous</a>
-                        </li>
-                        {% endif %}
-
-                        <li class="page-item active">
-                            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-                        </li>
-
-                        {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status %}&status={{ status }}{% endif %}">Next</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status %}&status={{ status }}{% endif %}">Last</a>
-                        </li>
-                        {% endif %}
-                    </ul>
+                <nav aria-label="Request pagination" class="mt-4">
+                    <div class="d-flex justify-content-center">
+                        <div class="btn-group" role="group" aria-label="Pagination">
+                            {% if page_obj.has_previous %}
+                            <a class="btn btn-outline-primary" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if status %}&status={{ status }}{% endif %}">First</a>
+                            <a class="btn btn-outline-primary" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status %}&status={{ status }}{% endif %}">Previous</a>
+                            {% endif %}
+                            <span class="btn btn-primary">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                            {% if page_obj.has_next %}
+                            <a class="btn btn-outline-primary" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status %}&status={{ status }}{% endif %}">Next</a>
+                            <a class="btn btn-outline-primary" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status %}&status={{ status }}{% endif %}">Last</a>
+                            {% endif %}
+                        </div>
+                    </div>
                 </nav>
                 {% endif %}
                 {% else %}
-                <div class="text-center py-5">
-                    <i class="bi bi-clipboard-x icon-large text-muted"></i>
+                <div class="empty-state">
+                    <i class="fas fa-clipboard-list icon-large text-muted"></i>
                     <h4 class="mt-3 text-muted">No Requests Found</h4>
                     {% if search_query or status %}
                     <p class="text-muted">No requests match your filters</p>
                     <a href="{% url 'request_list' %}" class="btn btn-outline-primary">
-                        <i class="bi bi-arrow-left me-1"></i>View All Requests
+                        <i class="fas fa-arrow-left me-1"></i>View All Requests
                     </a>
                     {% else %}
                     <p class="text-muted">No chick requests have been created yet.</p>
                     <a href="{% url 'request_create' %}" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-2"></i>Create First Request
+                        <i class="fas fa-plus-circle me-2"></i>Create First Request
                     </a>
                     {% endif %}
                 </div>
@@ -226,28 +528,20 @@
         </div>
     </div>
 </div>
-
-{% block extra_css %}
-<style>
-    .icon-large {
-        font-size: 4rem;
-    }
-    .dashboard-icon {
-        font-size: 2rem;
-        display: block;
-        margin-bottom: 0.5rem;
-    }
-</style>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    function updateStatus(requestId, status) {
-        if (confirm('Are you sure you want to ' + status + ' this request?')) {
+    function updateRequestStatus(button) {
+        const requestId = button.getAttribute('data-request-id');
+        const action = button.getAttribute('data-action');
+        const status = action === 'approve' ? 'approved' : 'rejected';
+        
+        if (confirm(`Are you sure you want to ${action} this request?`)) {
             // Create a form and submit it
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '/requests/' + requestId + '/update-status/';
+            form.action = `/requests/${requestId}/update-status/`;
             
             // Add CSRF token
             const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
@@ -271,7 +565,9 @@
         }
     }
     
-    function authorizeSale(requestId) {
+    function authorizeSaleRequest(button) {
+        const requestId = button.getAttribute('data-request-id');
+        
         if (confirm('Are you sure you want to authorize this sale? This will mark the request as sold.')) {
             fetch(`/requests/${requestId}/authorize-sale/`, {
                 method: 'POST',
@@ -294,5 +590,4 @@
         }
     }
 </script>
-{% endblock %}
 {% endblock %}

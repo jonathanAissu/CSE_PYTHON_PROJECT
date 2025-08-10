@@ -1,0 +1,133 @@
+<svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="techGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1976D2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0D47A1;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="screenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#BBDEFB;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="400" fill="url(#techGradient)"/>
+  
+  <!-- Computer/tablet screen -->
+  <rect x="200" y="100" width="400" height="250" rx="20" fill="#37474F" stroke="#263238" stroke-width="3"/>
+  <rect x="220" y="120" width="360" height="210" fill="url(#screenGradient)"/>
+  
+  <!-- Interface elements on screen -->
+  <!-- Header bar -->
+  <rect x="230" y="130" width="340" height="30" fill="#1976D2"/>
+  <text x="400" y="150" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#FFFFFF">
+    YOUNG4CHICKS Management System
+  </text>
+  
+  <!-- Data rows -->
+  <g fill="#333" font-family="Arial" font-size="10">
+    <!-- Headers -->
+    <rect x="240" y="170" width="320" height="20" fill="#E1F5FE"/>
+    <text x="250" y="182">Name</text>
+    <text x="350" y="182">Age</text>
+    <text x="400" y="182">Status</text>
+    <text x="480" y="182">Chicks</text>
+    <text x="530" y="182">Date</text>
+    
+    <!-- Data rows -->
+    <rect x="240" y="190" width="320" height="15" fill="#F5F5F5"/>
+    <text x="250" y="200">John Doe</text>
+    <text x="350" y="200">24</text>
+    <text x="400" y="200" fill="#4CAF50">Approved</text>
+    <text x="480" y="200">100</text>
+    <text x="530" y="200">Jan 2025</text>
+    
+    <rect x="240" y="205" width="320" height="15" fill="#FFFFFF"/>
+    <text x="250" y="215">Mary Jane</text>
+    <text x="350" y="215">28</text>
+    <text x="400" y="215" fill="#FF9800">Pending</text>
+    <text x="480" y="215">250</text>
+    <text x="530" y="215">Feb 2025</text>
+    
+    <rect x="240" y="220" width="320" height="15" fill="#F5F5F5"/>
+    <text x="250" y="230">Peter Smith</text>
+    <text x="350" y="230">22</text>
+    <text x="400" y="230" fill="#4CAF50">Approved</text>
+    <text x="480" y="230">500</text>
+    <text x="530" y="230">Mar 2025</text>
+  </g>
+  
+  <!-- Charts/graphs -->
+  <rect x="240" y="250" width="150" height="70" fill="#FFFFFF" stroke="#DDD"/>
+  <text x="315" y="265" text-anchor="middle" font-family="Arial" font-size="8" fill="#666">Sales Chart</text>
+  
+  <!-- Simple bar chart -->
+  <g fill="#4CAF50">
+    <rect x="250" y="290" width="15" height="20"/>
+    <rect x="270" y="285" width="15" height="25"/>
+    <rect x="290" y="280" width="15" height="30"/>
+    <rect x="310" y="275" width="15" height="35"/>
+    <rect x="330" y="270" width="15" height="40"/>
+    <rect x="350" y="265" width="15" height="45"/>
+  </g>
+  
+  <!-- Stats panel -->
+  <rect x="410" y="250" width="140" height="70" fill="#FFFFFF" stroke="#DDD"/>
+  <text x="480" y="265" text-anchor="middle" font-family="Arial" font-size="8" fill="#666">Key Stats</text>
+  
+  <g font-family="Arial" font-size="9" fill="#333">
+    <text x="420" y="280">Total Farmers: 1,247</text>
+    <text x="420" y="295">Chicks Sold: 45,670</text>
+    <text x="420" y="310">Success Rate: 94%</text>
+  </g>
+  
+  <!-- Mobile devices around the main screen -->
+  <!-- Phone 1 -->
+  <rect x="100" y="200" width="60" height="100" rx="10" fill="#424242"/>
+  <rect x="110" y="210" width="40" height="80" fill="#E8F5E8"/>
+  <circle cx="130" cy="245" r="15" fill="#4CAF50"/>
+  <text x="130" y="250" text-anchor="middle" font-family="Arial" font-size="8" fill="#FFF">✓</text>
+  
+  <!-- Tablet -->
+  <rect x="650" y="150" width="120" height="90" rx="8" fill="#616161"/>
+  <rect x="660" y="160" width="100" height="70" fill="#FFF3E0"/>
+  <circle cx="710" cy="185" r="12" fill="#FF9800"/>
+  <text x="710" y="190" text-anchor="middle" font-family="Arial" font-size="7" fill="#FFF">APP</text>
+  <text x="710" y="210" text-anchor="middle" font-family="Arial" font-size="6" fill="#666">Mobile Access</text>
+  
+  <!-- Floating tech icons -->
+  <g fill="rgba(255,255,255,0.3)">
+    <!-- Cloud -->
+    <ellipse cx="80" cy="80" rx="15" ry="8"/>
+    <ellipse cx="70" cy="75" rx="12" ry="10"/>
+    <ellipse cx="90" cy="75" rx="10" ry="8"/>
+    
+    <!-- Wifi signal -->
+    <g stroke="rgba(255,255,255,0.4)" stroke-width="2" fill="none">
+      <path d="M700 80 Q710 70 720 80"/>
+      <path d="M705 82 Q710 78 715 82"/>
+      <circle cx="710" cy="85" r="1" fill="rgba(255,255,255,0.4)"/>
+    </g>
+    
+    <!-- Database -->
+    <ellipse cx="750" cy="120" rx="12" ry="4" fill="rgba(255,255,255,0.3)"/>
+    <rect x="738" y="116" width="24" height="8" fill="rgba(255,255,255,0.3)"/>
+    <ellipse cx="750" cy="124" rx="12" ry="4" fill="rgba(255,255,255,0.3)"/>
+  </g>
+  
+  <!-- Network connections -->
+  <g stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="5,5">
+    <line x1="160" y1="250" x2="200" y2="200"/>
+    <line x1="600" y1="200" x2="650" y2="180"/>
+    <line x1="400" y1="100" x2="710" y2="85"/>
+  </g>
+  
+  <!-- Text overlay -->
+  <rect x="0" y="340" width="800" height="60" fill="rgba(0,0,0,0.8)"/>
+  <text x="400" y="365" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">
+    Smart Management System
+  </text>
+  <text x="400" y="385" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#F8F9FA">
+    Advanced digital platform for efficient farmer registration and stock management
+  </text>
+</svg>

@@ -3,170 +3,462 @@
 
 {% block title %}Feedstock Details - {{ feedstock.name_of_feeds }}{% endblock %}
 
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+    }
+    
+    .content-wrapper {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(149, 165, 166, 0.15);
+        margin: 1rem 0;
+        border-left: 4px solid #7f8c8d;
+    }
+    
+    .page-title {
+        color: #2c3e50;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 1rem;
+    }
+    
+    .main-card {
+        background: linear-gradient(135deg, #ecf0f1 0%, #d5dbdb 100%);
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(149, 165, 166, 0.15);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+    
+    .main-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(149, 165, 166, 0.25);
+    }
+    
+    .card-header-custom {
+        background: linear-gradient(135deg, #7f8c8d 0%, #6c797a 100%);
+        color: white;
+        border: none;
+        padding: 1rem 1.5rem;
+    }
+    
+    .card-header-custom h5 {
+        margin: 0;
+        font-weight: 600;
+    }
+    
+    .card-body-custom {
+        background: transparent;
+        padding: 2rem;
+    }
+    
+    .summary-card {
+        background: linear-gradient(135deg, #ecf0f1 0%, #d5dbdb 100%);
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(149, 165, 166, 0.15);
+        border-left: 4px solid #95a5a6;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+    
+    .summary-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(149, 165, 166, 0.25);
+    }
+    
+    .btn-warning-custom {
+        background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        border: none;
+        color: white;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-warning-custom:hover {
+        background: linear-gradient(135deg, #7f8c8d 0%, #6c797a 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(127, 140, 141, 0.3);
+    }
+    
+    .btn-danger-custom {
+        background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+        border: none;
+        color: white;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-danger-custom:hover {
+        background: linear-gradient(135deg, #a93226 0%, #922b21 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(192, 57, 43, 0.3);
+    }
+    
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        border: none;
+        color: white;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-secondary-custom:hover {
+        background: linear-gradient(135deg, #7f8c8d 0%, #6c797a 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(127, 140, 141, 0.3);
+    }
+    
+    .btn-outline-warning-custom {
+        border: 2px solid #95a5a6;
+        color: #95a5a6;
+        background: transparent;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-warning-custom:hover {
+        background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        color: white;
+        border-color: #7f8c8d;
+    }
+    
+    .btn-outline-danger-custom {
+        border: 2px solid #c0392b;
+        color: #c0392b;
+        background: transparent;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-danger-custom:hover {
+        background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+        color: white;
+        border-color: #a93226;
+    }
+    
+    .btn-outline-primary-custom {
+        border: 2px solid #7f8c8d;
+        color: #7f8c8d;
+        background: transparent;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-primary-custom:hover {
+        background: linear-gradient(135deg, #7f8c8d 0%, #6c797a 100%);
+        color: white;
+        border-color: #6c797a;
+    }
+    
+    .table {
+        background-color: transparent;
+        color: #2c3e50;
+    }
+    
+    .table td {
+        border-color: #bdc3c7;
+        padding: 0.75rem;
+    }
+    
+    .table-header {
+        color: #7f8c8d;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .financial-summary-item {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e8eced 100%);
+        border-radius: 10px;
+        padding: 1.5rem;
+        border-left: 4px solid #7f8c8d;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .financial-summary-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(149, 165, 166, 0.2);
+    }
+    
+    .financial-label {
+        color: #7f8c8d;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .financial-value {
+        color: #2c3e50;
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .financial-value.profit {
+        color: #95a5a6;
+    }
+    
+    .financial-value.loss {
+        color: #c0392b;
+    }
+    
+    .financial-subtitle {
+        color: #7f8c8d;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .modal-content-custom {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%);
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(149, 165, 166, 0.3);
+    }
+    
+    .modal-header-custom {
+        background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+        color: white;
+        border: none;
+        border-radius: 15px 15px 0 0;
+    }
+    
+    .modal-body-custom {
+        padding: 2rem;
+        color: #2c3e50;
+    }
+    
+    .modal-footer-custom {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%);
+        border: none;
+        border-radius: 0 0 15px 15px;
+        padding: 1.5rem 2rem;
+    }
+    
+    .delete-form {
+        display: inline;
+    }
+    
+    .alert-warning-custom {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border: 1px solid #d69e2e;
+        border-radius: 10px;
+        color: #8b5a2b;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .content-wrapper {
+            margin: 0.5rem;
+            padding: 1rem;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-body-custom {
+            padding: 1rem;
+        }
+        
+        .financial-summary-item {
+            padding: 1rem;
+        }
+        
+        .financial-value {
+            font-size: 1.25rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>
-                    <i class="bi bi-bag-check text-primary me-2"></i>
-                    Feedstock Details
-                </h2>
-                <div>
-                    <a href="{% url 'feedstock_update' feedstock.pk %}" class="btn btn-warning">
-                        <i class="bi bi-pencil-square me-1"></i>Edit
-                    </a>
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                        <i class="bi bi-trash me-1"></i>Delete
-                    </button>
-                    <a href="{% url 'feedstock_list' %}" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left me-1"></i>Back to List
-                    </a>
-                </div>
-            </div>
-
-            <div class="row">
-                <!-- Main Details Card -->
-                <div class="col-lg-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">
-                                <i class="bi bi-info-circle me-2"></i>
-                                {{ feedstock.name_of_feeds }} - {{ feedstock.brand_of_feeds }}
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h6 class="text-muted">Basic Information</h6>
-                                    <table class="table table-sm">
-                                        <tr>
-                                            <td><strong>Feed Name:</strong></td>
-                                            <td>{{ feedstock.name_of_feeds }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Brand:</strong></td>
-                                            <td>{{ feedstock.brand_of_feeds }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Type:</strong></td>
-                                            <td>{{ feedstock.type_of_feeds }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Quantity:</strong></td>
-                                            <td>{{ feedstock.quantity_of_feeds }} bags</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Date Added:</strong></td>
-                                            <td>{{ feedstock.date|date:"F d, Y g:i A" }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="col-md-6">
-                                    <h6 class="text-muted">Supplier Information</h6>
-                                    <table class="table table-sm">
-                                        <tr>
-                                            <td><strong>Supplier Name:</strong></td>
-                                            <td>{{ feedstock.supplier_name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Contact:</strong></td>
-                                            <td>{{ feedstock.supplier_contact }}</td>
-                                        </tr>
-                                    </table>
-                                    
-                                    <h6 class="text-muted mt-3">Pricing Details</h6>
-                                    <table class="table table-sm">
-                                        <tr>
-                                            <td><strong>Unit Price:</strong></td>
-                                            <td>UGX {{ feedstock.unit_price|floatformat:2 }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Unit Cost:</strong></td>
-                                            <td>UGX {{ feedstock.unit_cost|floatformat:2 }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Buying Price:</strong></td>
-                                            <td>UGX {{ feedstock.buying_price|floatformat:2 }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Selling Price:</strong></td>
-                                            <td>UGX {{ feedstock.selling_price|floatformat:2 }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="page-title">
+                        <i class="fas fa-box-open me-2"></i>
+                        Feedstock Details
+                    </h2>
+                    <div>
+                        <a href="{% url 'feedstock_update' feedstock.pk %}" class="btn btn-warning-custom">
+                            <i class="fas fa-edit me-1"></i>Edit
+                        </a>
+                        <button type="button" class="btn btn-danger-custom" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="fas fa-trash me-1"></i>Delete
+                        </button>
+                        <a href="{% url 'feedstock_list' %}" class="btn btn-secondary-custom">
+                            <i class="fas fa-arrow-left me-1"></i>Back to List
+                        </a>
                     </div>
                 </div>
 
-                <!-- Financial Summary Card -->
-                <div class="col-lg-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">
-                                <i class="bi bi-calculator me-2"></i>
-                                Financial Summary
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <div class="bg-light p-3 rounded">
-                                        <h6 class="text-muted mb-2">Total Investment</h6>
-                                        <h4 class="text-primary mb-0">
-                                            UGX {{ total_cost|floatformat:2 }}
-                                        </h4>
-                                        <small class="text-muted">{{ feedstock.quantity_of_feeds }} bags × {{ feedstock.buying_price|floatformat:2 }}</small>
+                <div class="row">
+                    <!-- Main Details Card -->
+                    <div class="col-lg-8">
+                        <div class="main-card">
+                            <div class="card-header-custom">
+                                <h5>
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    {{ feedstock.name_of_feeds }} - {{ feedstock.brand_of_feeds }}
+                                </h5>
+                            </div>
+                            <div class="card-body-custom">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6 class="table-header">Basic Information</h6>
+                                        <table class="table table-sm">
+                                            <tr>
+                                                <td><strong>Feed Name:</strong></td>
+                                                <td>{{ feedstock.name_of_feeds }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Brand:</strong></td>
+                                                <td>{{ feedstock.brand_of_feeds }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Type:</strong></td>
+                                                <td>{{ feedstock.type_of_feeds }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Quantity:</strong></td>
+                                                <td>{{ feedstock.quantity_of_feeds }} bags</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Date Added:</strong></td>
+                                                <td>{{ feedstock.date|date:"F d, Y g:i A" }}</td>
+                                            </tr>
+                                        </table>
                                     </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="bg-light p-3 rounded">
-                                        <h6 class="text-muted mb-2">Potential Revenue</h6>
-                                        <h4 class="text-success mb-0">
-                                            UGX {{ total_selling_value|floatformat:2 }}
-                                        </h4>
-                                        <small class="text-muted">{{ feedstock.quantity_of_feeds }} bags × {{ feedstock.selling_price|floatformat:2 }}</small>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="bg-light p-3 rounded">
-                                        <h6 class="text-muted mb-2">Expected Profit</h6>
-                                        <h4 class="{% if potential_profit >= 0 %}text-success{% else %}text-danger{% endif %} mb-0">
-                                            UGX {{ potential_profit|floatformat:2 }}
-                                        </h4>
-                                        <small class="text-muted">
-                                            {% if potential_profit >= 0 %}
-                                                <i class="bi bi-arrow-up-circle text-success"></i> Profit
-                                            {% else %}
-                                                <i class="bi bi-arrow-down-circle text-danger"></i> Loss
-                                            {% endif %}
-                                        </small>
+                                    <div class="col-md-6">
+                                        <h6 class="table-header">Supplier Information</h6>
+                                        <table class="table table-sm">
+                                            <tr>
+                                                <td><strong>Supplier Name:</strong></td>
+                                                <td>{{ feedstock.supplier_name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Contact:</strong></td>
+                                                <td>{{ feedstock.supplier_contact }}</td>
+                                            </tr>
+                                        </table>
+                                        
+                                        <h6 class="table-header mt-3">Pricing Details</h6>
+                                        <table class="table table-sm">
+                                            <tr>
+                                                <td><strong>Unit Price:</strong></td>
+                                                <td>UGX {{ feedstock.unit_price|floatformat:2 }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Unit Cost:</strong></td>
+                                                <td>UGX {{ feedstock.unit_cost|floatformat:2 }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Buying Price:</strong></td>
+                                                <td>UGX {{ feedstock.buying_price|floatformat:2 }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Selling Price:</strong></td>
+                                                <td>UGX {{ feedstock.selling_price|floatformat:2 }}</td>
+                                            </tr>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Quick Actions Card -->
-                    <div class="card mt-3">
-                        <div class="card-header">
-                            <h6 class="card-title mb-0">
-                                <i class="bi bi-lightning me-2"></i>
-                                Quick Actions
-                            </h6>
+                    <!-- Financial Summary Card -->
+                    <div class="col-lg-4">
+                        <div class="summary-card">
+                            <div class="card-header-custom">
+                                <h5>
+                                    <i class="fas fa-calculator me-2"></i>
+                                    Financial Summary
+                                </h5>
+                            </div>
+                            <div class="card-body-custom">
+                                <div class="financial-summary-item">
+                                    <div class="financial-label">Total Investment</div>
+                                    <div class="financial-value">
+                                        UGX {{ total_cost|floatformat:2 }}
+                                    </div>
+                                    <div class="financial-subtitle">{{ feedstock.quantity_of_feeds }} bags × {{ feedstock.buying_price|floatformat:2 }}</div>
+                                </div>
+                                
+                                <div class="financial-summary-item">
+                                    <div class="financial-label">Potential Revenue</div>
+                                    <div class="financial-value profit">
+                                        UGX {{ total_selling_value|floatformat:2 }}
+                                    </div>
+                                    <div class="financial-subtitle">{{ feedstock.quantity_of_feeds }} bags × {{ feedstock.selling_price|floatformat:2 }}</div>
+                                </div>
+                                
+                                <div class="financial-summary-item">
+                                    <div class="financial-label">Expected Profit</div>
+                                    <div class="financial-value {% if potential_profit >= 0 %}profit{% else %}loss{% endif %}">
+                                        UGX {{ potential_profit|floatformat:2 }}
+                                    </div>
+                                    <div class="financial-subtitle">
+                                        {% if potential_profit >= 0 %}
+                                            <i class="fas fa-arrow-up me-1"></i> Profit
+                                        {% else %}
+                                            <i class="fas fa-arrow-down me-1"></i> Loss
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div class="d-grid gap-2">
-                                <a href="{% url 'feedstock_update' feedstock.pk %}" class="btn btn-outline-warning btn-sm">
-                                    <i class="bi bi-pencil-square me-1"></i>Edit Details
-                                </a>
-                                <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                    <i class="bi bi-trash me-1"></i>Delete Feedstock
-                                </button>
-                                <a href="{% url 'feedstock_create' %}" class="btn btn-outline-primary btn-sm">
-                                    <i class="bi bi-plus-circle me-1"></i>Add New Feedstock
-                                </a>
+
+                        <!-- Quick Actions Card -->
+                        <div class="summary-card">
+                            <div class="card-header-custom">
+                                <h6>
+                                    <i class="fas fa-bolt me-2"></i>
+                                    Quick Actions
+                                </h6>
+                            </div>
+                            <div class="card-body-custom">
+                                <div class="d-grid gap-2">
+                                    <a href="{% url 'feedstock_update' feedstock.pk %}" class="btn btn-outline-warning-custom btn-sm">
+                                        <i class="fas fa-edit me-1"></i>Edit Details
+                                    </a>
+                                    <button type="button" class="btn btn-outline-danger-custom btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                        <i class="fas fa-trash me-1"></i>Delete Feedstock
+                                    </button>
+                                    <a href="{% url 'feedstock_create' %}" class="btn btn-outline-primary-custom btn-sm">
+                                        <i class="fas fa-plus-circle me-1"></i>Add New Feedstock
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -174,40 +466,39 @@
             </div>
         </div>
     </div>
-</div>
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">
-                    <i class="bi bi-exclamation-triangle text-danger me-2"></i>
-                    Confirm Delete
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this feedstock?</p>
-                <div class="alert alert-warning">
-                    <strong>{{ feedstock.name_of_feeds }}</strong> - {{ feedstock.brand_of_feeds }}<br>
-                    <small>Quantity: {{ feedstock.quantity_of_feeds }} bags</small>
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header modal-header-custom">
+                    <h5 class="modal-title" id="deleteModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Confirm Delete
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <p class="text-danger">
-                    <i class="bi bi-exclamation-triangle me-1"></i>
-                    This action cannot be undone.
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form method="post" action="{% url 'feedstock_delete' feedstock.pk %}" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash me-1"></i>Delete
-                    </button>
-                </form>
+                <div class="modal-body modal-body-custom">
+                    <p>Are you sure you want to delete this feedstock?</p>
+                    <div class="alert alert-warning-custom">
+                        <strong>{{ feedstock.name_of_feeds }}</strong> - {{ feedstock.brand_of_feeds }}<br>
+                        <small>Quantity: {{ feedstock.quantity_of_feeds }} bags</small>
+                    </div>
+                    <p class="text-danger">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        This action cannot be undone.
+                    </p>
+                </div>
+                <div class="modal-footer modal-footer-custom">
+                    <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">Cancel</button>
+                    <form method="post" action="{% url 'feedstock_delete' feedstock.pk %}" class="delete-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger-custom">
+                            <i class="fas fa-trash me-1"></i>Delete
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

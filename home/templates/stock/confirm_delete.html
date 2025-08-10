@@ -2,77 +2,293 @@
 
 {% block title %}Delete Stock - YOUNG4CHICKS{% endblock %}
 
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+    }
+    
+    .content-wrapper {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ecf0f1 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(149, 165, 166, 0.15);
+        margin: 1rem 0;
+        border-left: 4px solid #c0392b;
+        border-top: 1px solid #e8eced;
+    }
+    
+    .warning-icon {
+        font-size: 4rem;
+        color: #c0392b;
+        text-shadow: 2px 2px 4px rgba(192, 57, 43, 0.3);
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    .page-title {
+        color: #c0392b;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        margin-top: 1rem;
+    }
+    
+    .subtitle {
+        color: #7f8c8d;
+        font-weight: 500;
+    }
+    
+    .delete-card {
+        background: linear-gradient(135deg, #ecf0f1 0%, #d5dbdb 100%);
+        border: 2px solid #c0392b;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(192, 57, 43, 0.15);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    
+    .delete-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(192, 57, 43, 0.25);
+    }
+    
+    .card-header-danger {
+        background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+        color: white;
+        border: none;
+        padding: 1rem 1.5rem;
+    }
+    
+    .card-header-danger h5 {
+        margin: 0;
+        font-weight: 600;
+    }
+    
+    .card-body-custom {
+        background: linear-gradient(135deg, #ecf0f1 0%, #d5dbdb 100%);
+        padding: 2rem;
+    }
+    
+    .stock-info-alert {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e8eced 100%);
+        border: 1px solid #bdc3c7;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .stock-info-row {
+        margin-bottom: 1rem;
+    }
+    
+    .stock-info-row:last-child {
+        margin-bottom: 0;
+    }
+    
+    .stock-label {
+        color: #7f8c8d;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .stock-value {
+        color: #2c3e50;
+        font-weight: 500;
+        font-size: 1rem;
+    }
+    
+    .warning-alert {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border: 1px solid #d69e2e;
+        border-radius: 10px;
+        padding: 1rem;
+        color: #8b5a2b;
+    }
+    
+    .warning-alert i {
+        color: #d69e2e;
+    }
+    
+    .divider {
+        border-top: 1px solid #bdc3c7;
+        margin: 1rem 0;
+        opacity: 0.5;
+    }
+    
+    .btn-outline-secondary-custom {
+        border: 2px solid #95a5a6;
+        color: #7f8c8d;
+        background: transparent;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-secondary-custom:hover {
+        background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        color: white;
+        transform: translateY(-2px);
+        border-color: #7f8c8d;
+    }
+    
+    .btn-danger-custom {
+        background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+        border: none;
+        color: white;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-danger-custom:hover {
+        background: linear-gradient(135deg, #a93226 0%, #922b21 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(192, 57, 43, 0.3);
+    }
+    
+    .form-section {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #bdc3c7;
+    }
+    
+    .confirmation-text {
+        color: #2c3e50;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+    
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .content-wrapper {
+            margin: 0.5rem;
+            padding: 1rem;
+        }
+        
+        .warning-icon {
+            font-size: 3rem;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+        }
+        
+        .button-group {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .btn {
+            width: 100%;
+        }
+        
+        .card-body-custom {
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container">
+<div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-8 col-lg-6">
             <div class="content-wrapper">
                 <div class="text-center mb-4">
-                    <i class="bi bi-exclamation-triangle text-danger" style="font-size: 4rem;"></i>
-                    <h2 class="mt-3 text-danger">Confirm Deletion</h2>
-                    <p class="text-muted">This action cannot be undone</p>
+                    <i class="fas fa-exclamation-triangle warning-icon"></i>
+                    <h2 class="page-title">Confirm Deletion</h2>
+                    <p class="subtitle">This action cannot be undone</p>
                 </div>
 
-                <div class="card border-danger">
-                    <div class="card-header bg-danger text-white">
-                        <h5 class="mb-0">
-                            <i class="bi bi-trash me-2"></i>Delete Stock
+                <div class="delete-card">
+                    <div class="card-header-danger">
+                        <h5>
+                            <i class="fas fa-trash me-2"></i>Delete Stock Confirmation
                         </h5>
                     </div>
-                    <div class="card-body">
-                        <p class="mb-3">Are you sure you want to delete the following stock?</p>
+                    <div class="card-body-custom">
+                        <p class="confirmation-text">
+                            Are you sure you want to delete the following stock item?
+                        </p>
                         
-                        <div class="alert alert-light">
-                            <div class="row">
+                        <div class="stock-info-alert">
+                            <div class="row stock-info-row">
                                 <div class="col-6">
-                                    <strong>Stock Name:</strong><br>
-                                    {{ stock.stock_name }}
+                                    <div class="stock-label">Stock Name</div>
+                                    <div class="stock-value">{{ stock.stock_name }}</div>
                                 </div>
                                 <div class="col-6">
-                                    <strong>Quantity:</strong><br>
-                                    {{ stock.quantity }} chicks
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-6">
-                                    <strong>Type:</strong><br>
-                                    {{ stock.chick_type|title }}
-                                </div>
-                                <div class="col-6">
-                                    <strong>Breed:</strong><br>
-                                    {{ stock.chick_breed|title }}
+                                    <div class="stock-label">Quantity</div>
+                                    <div class="stock-value">
+                                        <i class="fas fa-boxes me-1"></i>{{ stock.quantity }} chicks
+                                    </div>
                                 </div>
                             </div>
-                            <hr>
-                            <div class="row">
+                            
+                            <div class="divider"></div>
+                            
+                            <div class="row stock-info-row">
                                 <div class="col-6">
-                                    <strong>Manager:</strong><br>
-                                    {{ stock.manager_name }}
+                                    <div class="stock-label">Chick Type</div>
+                                    <div class="stock-value">{{ stock.chick_type|title }}</div>
                                 </div>
                                 <div class="col-6">
-                                    <strong>Date Added:</strong><br>
-                                    {{ stock.date_added|date:"M d, Y" }}
+                                    <div class="stock-label">Chick Breed</div>
+                                    <div class="stock-value">{{ stock.chick_breed|title }}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="divider"></div>
+                            
+                            <div class="row stock-info-row">
+                                <div class="col-6">
+                                    <div class="stock-label">Manager</div>
+                                    <div class="stock-value">
+                                        <i class="fas fa-user-tie me-1"></i>{{ stock.manager_name }}
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stock-label">Date Added</div>
+                                    <div class="stock-value">
+                                        <i class="fas fa-calendar me-1"></i>{{ stock.date_added|date:"M d, Y" }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            <strong>Warning:</strong> Deleting this stock will permanently remove it from the system. 
-                            Any related records or requests may be affected.
+                        <div class="warning-alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Critical Warning:</strong> Deleting this stock will permanently remove it from the system. 
+                            Any related records, requests, or transactions may be affected. This action cannot be reversed.
                         </div>
                     </div>
                 </div>
 
-                <form method="post" class="mt-4">
+                <form method="post" class="form-section">
                     {% csrf_token %}
-                    <div class="d-flex justify-content-between">
-                        <a href="{% url 'stock_detail' stock.pk %}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-2"></i>Cancel
+                    <div class="button-group">
+                        <a href="{% url 'stock_detail' stock.pk %}" class="btn btn-outline-secondary-custom">
+                            <i class="fas fa-arrow-left me-2"></i>Cancel & Go Back
                         </a>
-                        <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-trash me-2"></i>Yes, Delete Stock
+                        <button type="submit" class="btn btn-danger-custom">
+                            <i class="fas fa-trash me-2"></i>Yes, Delete Stock Permanently
                         </button>
                     </div>
                 </form>

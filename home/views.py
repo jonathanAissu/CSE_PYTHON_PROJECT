@@ -8,6 +8,7 @@ from django.db.models import Q, Count, Sum
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.utils import timezone
+from datetime import timedelta
 from decimal import Decimal
 from .models import UserProfile, Stock, Feedstock, Farmer, ChickRequest
 from .forms import UserCreation, StockForm, FeedstockForm, FarmerForm, ChickRequestForm
@@ -568,6 +569,26 @@ def request_create(request):
                 messages.error(request, f'Cannot create request: Farmer "{farmer.farmer_name}" is not approved yet.')
                 return redirect('request_create')
             
+            # Check for 4-month waiting period between requests
+            four_months_ago = timezone.now() - timedelta(days=120)  # Approximately 4 months
+            recent_request = ChickRequest.objects.filter(
+                farmer_name=farmer,
+                date_time__gt=four_months_ago
+            ).order_by('-date_time').first()
+            
+            if recent_request:
+                time_since_last_request = timezone.now() - recent_request.date_time
+                days_to_wait = 120 - time_since_last_request.days
+                
+                if days_to_wait > 0:
+                    messages.error(
+                        request, 
+                        f'Cannot create request: Farmer "{farmer.farmer_name}" must wait {days_to_wait} more days. '
+                        f'Last request was made on {recent_request.date_time.strftime("%B %d, %Y")}. '
+                        f'Next request allowed after {(recent_request.date_time + timedelta(days=120)).strftime("%B %d, %Y")}.'
+                    )
+                    return redirect('request_create')
+            
             chick_request = ChickRequest.objects.create(
                 farmer_name=farmer,
                 chicks_type=request.POST.get('chicks_type'),
@@ -605,9 +626,30 @@ def request_update_status(request, pk):
     if request.method == 'POST':
         new_status = request.POST.get('status')
         if new_status in ['approved', 'rejected']:
+            old_status = chick_request.status
             chick_request.status = new_status
             chick_request.save()
-            messages.success(request, f'Request status updated to {new_status}!')
+            
+            # Update farmer status to "returning" if this is their first approved request
+            if new_status == 'approved' and chick_request.farmer_name.type_of_farmer == 'starter':
+                # Check if this is their first approved request
+                previous_approved_requests = ChickRequest.objects.filter(
+                    farmer_name=chick_request.farmer_name,
+                    status='approved'
+                ).exclude(pk=chick_request.pk).count()
+                
+                if previous_approved_requests == 0:  # This is their first approved request
+                    chick_request.farmer_name.type_of_farmer = 'returning'
+                    chick_request.farmer_name.save()
+                    messages.success(
+                        request, 
+                        f'Request status updated to {new_status}. '
+                        f'Farmer "{chick_request.farmer_name.farmer_name}" has been upgraded to "returning farmer" status!'
+                    )
+                else:
+                    messages.success(request, f'Request status updated to {new_status}!')
+            else:
+                messages.success(request, f'Request status updated to {new_status}!')
         else:
             messages.error(request, 'Invalid status!')
     
@@ -814,10 +856,12 @@ def sales_report(request: HttpRequest) -> HttpResponse:
         total_sales_value += sale_value
         total_chicks_sold += sale.quantity
     
-    # Convert farmers_served sets to counts
+    # Convert farmers_served sets to counts and calculate averages
     for rep_data in sales_by_rep.values():
         rep_data['unique_farmers'] = len(rep_data['farmers_served'])
         rep_data['farmers_served'] = list(rep_data['farmers_served'])
+        # Calculate average per sale
+        rep_data['avg_per_sale'] = rep_data['total_value'] / rep_data['total_sales'] if rep_data['total_sales'] > 0 else 0
     
     # Sort sales details by date (most recent first)
     for rep_data in sales_by_rep.values():
@@ -831,6 +875,9 @@ def sales_report(request: HttpRequest) -> HttpResponse:
     top_rep = None
     if sales_by_rep:
         top_rep = max(sales_by_rep.values(), key=lambda x: x['total_value'])
+        # Add avg_per_sale to top_rep if not already present
+        if 'avg_per_sale' not in top_rep:
+            top_rep['avg_per_sale'] = top_rep['total_value'] / top_rep['total_sales'] if top_rep['total_sales'] > 0 else 0
     
     # Daily sales breakdown
     daily_sales = {}
@@ -850,8 +897,13 @@ def sales_report(request: HttpRequest) -> HttpResponse:
         daily_sales[date_str]['chicks_sold'] += sale.quantity
         daily_sales[date_str]['total_value'] += sale.quantity * 1650
     
-    # Convert to sorted list
-    daily_sales_list = sorted(daily_sales.values(), key=lambda x: x['date'], reverse=True)
+    # Convert to sorted list and add average per sale
+    daily_sales_list = []
+    for day_data in daily_sales.values():
+        day_data['avg_per_sale'] = day_data['total_value'] / day_data['sales_count'] if day_data['sales_count'] > 0 else 0
+        daily_sales_list.append(day_data)
+    
+    daily_sales_list = sorted(daily_sales_list, key=lambda x: x['date'], reverse=True)
     
     context = {
         'start_date': start_date,

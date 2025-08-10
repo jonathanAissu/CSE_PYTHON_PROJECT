@@ -2,6 +2,205 @@
 
 {% block title %}Create Request - YOUNG4CHICKS{% endblock %}
 
+{% block extra_css %}
+<style>
+    .content-wrapper {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .form-section {
+        background-color: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #6c757d;
+        transition: all 0.3s ease;
+    }
+    
+    .form-section:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        background-color: #ffffff;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #95a5a6;
+        box-shadow: 0 0 0 0.2rem rgba(149, 165, 166, 0.25);
+        background-color: #ffffff;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-label i {
+        color: #6c757d;
+        margin-right: 0.5rem;
+    }
+    
+    .section-header {
+        background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 15px 15px 0 0;
+        margin-bottom: 0;
+    }
+    
+    .section-body {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 0 0 15px 15px;
+        border: 2px solid #e9ecef;
+        border-top: none;
+    }
+    
+    .info-card {
+        background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+        border: none;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #95a5a6;
+    }
+    
+    .warning-card {
+        background: linear-gradient(135deg, #f4f1e8 0%, #e8dcc0 100%);
+        border: none;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #d6ac47;
+    }
+    
+    .farmer-info-display {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .calculation-section {
+        background: linear-gradient(135deg, #e8f5e8 0%, #d4ddd4 100%);
+        border: none;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #6b8e6b;
+    }
+    
+    .calculation-header {
+        background: linear-gradient(135deg, #6b8e6b 0%, #5a7a5a 100%);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 15px 15px 0 0;
+        margin-bottom: 0;
+    }
+    
+    .calculation-body {
+        background: linear-gradient(135deg, #e8f5e8 0%, #d4ddd4 100%);
+        padding: 1.5rem;
+        border-radius: 0 0 15px 15px;
+        border: 2px solid #d4e6d4;
+        border-top: none;
+    }
+    
+    .cost-item {
+        text-align: center;
+        padding: 1rem;
+        background: rgba(255,255,255,0.7);
+        border-radius: 10px;
+        margin-bottom: 1rem;
+    }
+    
+    .cost-item h6 {
+        color: #495057;
+    }
+    
+    .cost-item h4 {
+        margin: 0.5rem 0;
+    }
+    
+    .cost-price {
+        color: #6b8e6b !important;
+    }
+    
+    .cost-quantity {
+        color: #495057 !important;
+    }
+    
+    .cost-total {
+        color: #7f8c8d !important;
+    }
+    
+    .btn-custom {
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);
+        border: none;
+        color: white;
+    }
+    
+    .btn-primary-custom:hover {
+        background: linear-gradient(135deg, #6c7b7d 0%, #839496 100%);
+        color: white;
+    }
+    
+    .btn-outline-custom {
+        border: 2px solid #95a5a6;
+        color: #95a5a6;
+        background: transparent;
+    }
+    
+    .btn-outline-custom:hover {
+        background-color: #95a5a6;
+        color: white;
+    }
+    
+    .page-title {
+        color: #2c3e50;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .form-text {
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+    
+    .section-title {
+        color: #495057;
+        font-weight: 600;
+    }
+    
+    .hidden {
+        display: none;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="row justify-content-center">
@@ -9,14 +208,14 @@
             <div class="content-wrapper">
                 <div class="row">
                     <div class="col-12">
-                        <h1 class="mb-4">
+                        <h1 class="mb-4 page-title">
                             <i class="bi bi-plus-circle me-2"></i>{{ title|default:"Create New Chick Request" }}
                         </h1>
-                        <div class="alert alert-info">
+                        <div class="info-card">
                             <i class="bi bi-info-circle me-2"></i>
                             <strong>Request Policy:</strong> Starter farmers can request up to 100 chicks, returning farmers up to 500 chicks. Requests can be made every 4 months.
                         </div>
-                        <div class="alert alert-warning">
+                        <div class="warning-card">
                             <i class="bi bi-shield-check me-2"></i>
                             <strong>Note:</strong> Only approved farmers are shown in the dropdown. If you don't see a farmer, they may still be pending approval.
                         </div>
@@ -26,14 +225,14 @@
                 <form method="post">
                     {% csrf_token %}
                     
-                    <!-- Farmer Selection -->
-                    <div class="card border-primary mb-4">
-                        <div class="card-header bg-primary text-white">
+                    <!-- Farmer Selection Section -->
+                    <div class="mb-4">
+                        <div class="section-header">
                             <h5 class="mb-0">
                                 <i class="bi bi-person me-2"></i>Select Farmer
                             </h5>
                         </div>
-                        <div class="card-body">
+                        <div class="section-body">
                             <div class="mb-3">
                                 <label for="farmer_id" class="form-label">
                                     <i class="bi bi-people me-1"></i>Farmer *
@@ -52,7 +251,7 @@
                                 </select>
                             </div>
                             
-                            <div id="farmer-info" class="alert alert-light" style="display: none;">
+                            <div id="farmer-info" class="farmer-info-display hidden">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <strong>Farmer Type:</strong> <span id="farmer-type"></span><br>
@@ -67,107 +266,112 @@
                         </div>
                     </div>
 
-                    <!-- Chick Details -->
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="chicks_type" class="form-label">
-                                    <i class="bi bi-egg me-1"></i>Chick Type *
-                                </label>
-                                <select class="form-select" id="chicks_type" name="chicks_type" required>
-                                    <option value="">Select Chick Type</option>
-                                    {% for choice in chick_types %}
-                                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-                                    {% endfor %}
-                                </select>
+                    <!-- Chick Details Section -->
+                    <div class="form-section">
+                        <h5 class="mb-3 section-title">
+                            <i class="bi bi-egg-fill me-2"></i>Chick Details
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="chicks_type" class="form-label">
+                                        <i class="bi bi-egg me-1"></i>Chick Type *
+                                    </label>
+                                    <select class="form-select" id="chicks_type" name="chicks_type" required>
+                                        <option value="">Select Chick Type</option>
+                                        {% for choice in chick_types %}
+                                        <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="chicks_breed" class="form-label">
-                                    <i class="bi bi-award me-1"></i>Chick Breed *
-                                </label>
-                                <select class="form-select" id="chicks_breed" name="chicks_breed" required>
-                                    <option value="">Select Chick Breed</option>
-                                    {% for choice in chick_breeds %}
-                                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="quantity" class="form-label">
-                                    <i class="bi bi-123 me-1"></i>Quantity *
-                                </label>
-                                <input type="number" class="form-control" id="quantity" name="quantity" 
-                                       min="1" max="500" required>
-                                <div class="form-text">
-                                    <i class="bi bi-info-circle me-1"></i>
-                                    Maximum: 100 for starter farmers, 500 for returning farmers
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="chicks_breed" class="form-label">
+                                        <i class="bi bi-award me-1"></i>Chick Breed *
+                                    </label>
+                                    <select class="form-select" id="chicks_breed" name="chicks_breed" required>
+                                        <option value="">Select Chick Breed</option>
+                                        {% for choice in chick_breeds %}
+                                        <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="chicks_period" class="form-label">
-                                    <i class="bi bi-calendar me-1"></i>Preferred Age (Days) *
-                                </label>
-                                <input type="number" class="form-control" id="chicks_period" name="chicks_period" 
-                                       min="1" max="30" value="1" required>
-                                <div class="form-text">Age in days (1-30 days)</div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="quantity" class="form-label">
+                                        <i class="bi bi-123 me-1"></i>Quantity *
+                                    </label>
+                                    <input type="number" class="form-control" id="quantity" name="quantity" 
+                                           min="1" max="500" required>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Maximum: 100 for starter farmers, 500 for returning farmers
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="chicks_period" class="form-label">
+                                        <i class="bi bi-calendar me-1"></i>Preferred Age (Days) *
+                                    </label>
+                                    <input type="number" class="form-control" id="chicks_period" name="chicks_period" 
+                                           min="1" max="30" value="1" required>
+                                    <div class="form-text">Age in days (1-30 days)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="feeds_needed" class="form-label">
+                                <i class="bi bi-bag me-1"></i>Feeds Needed *
+                            </label>
+                            <select class="form-select" id="feeds_needed" name="feeds_needed" required>
+                                <option value="">Select option</option>
+                                {% for choice in yes_no_choices %}
+                                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">
+                                <i class="bi bi-gift me-1"></i>
+                                Each farmer is eligible for 2 free bags of feeds, payable after 2 months
                             </div>
                         </div>
                     </div>
 
+                    <!-- Cost Calculation Section -->
                     <div class="mb-4">
-                        <label for="feeds_needed" class="form-label">
-                            <i class="bi bi-bag me-1"></i>Feeds Needed *
-                        </label>
-                        <select class="form-select" id="feeds_needed" name="feeds_needed" required>
-                            <option value="">Select option</option>
-                            {% for choice in yes_no_choices %}
-                            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-                            {% endfor %}
-                        </select>
-                        <div class="form-text">
-                            <i class="bi bi-gift me-1"></i>
-                            Each farmer is eligible for 2 free bags of feeds, payable after 2 months
-                        </div>
-                    </div>
-
-                    <!-- Cost Calculation -->
-                    <div class="card border-success mb-4">
-                        <div class="card-header bg-success text-white">
+                        <div class="calculation-header">
                             <h5 class="mb-0">
                                 <i class="bi bi-calculator me-2"></i>Cost Calculation
                             </h5>
                         </div>
-                        <div class="card-body">
+                        <div class="calculation-body">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <div class="text-center">
+                                    <div class="cost-item">
                                         <h6>Price per Chick</h6>
-                                        <h4 class="text-success">UGX 1650</h4>
+                                        <h4 class="cost-price">UGX 1650</h4>
                                         <small class="text-muted">Fixed price</small>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="text-center">
+                                    <div class="cost-item">
                                         <h6>Quantity</h6>
-                                        <h4 id="calc-quantity">0</h4>
+                                        <h4 class="cost-quantity" id="calc-quantity">0</h4>
                                         <small class="text-muted">Chicks</small>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="text-center">
+                                    <div class="cost-item">
                                         <h6>Total Cost</h6>
-                                        <h4 class="text-primary" id="total-cost">UGX 0</h4>
+                                        <h4 class="cost-total" id="total-cost">UGX 0</h4>
                                         <small class="text-muted">+ 2 free feed bags</small>
                                     </div>
                                 </div>
@@ -175,17 +379,18 @@
                         </div>
                     </div>
 
+                    <!-- Action Buttons -->
                     <div class="row mt-4">
                         <div class="col-12">
                             <div class="d-flex justify-content-between">
-                                <a href="{% url 'request_list' %}" class="btn btn-outline-secondary">
+                                <a href="{% url 'request_list' %}" class="btn btn-outline-custom btn-custom">
                                     <i class="bi bi-arrow-left me-2"></i>Back to Requests
                                 </a>
                                 <div>
-                                    <button type="reset" class="btn btn-outline-warning me-2">
+                                    <button type="reset" class="btn btn-outline-custom btn-custom me-2">
                                         <i class="bi bi-arrow-clockwise me-1"></i>Reset
                                     </button>
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-primary-custom btn-custom">
                                         <i class="bi bi-plus-circle me-2"></i>Create Request
                                     </button>
                                 </div>
@@ -217,13 +422,13 @@
             const limit = type === 'starter' ? '100 chicks' : 'Up to 500 chicks';
             document.getElementById('chick-limit').textContent = limit;
             
-            infoDiv.style.display = 'block';
+            infoDiv.classList.remove('hidden');
             
             // Update quantity max
             const quantityInput = document.getElementById('quantity');
             quantityInput.max = type === 'starter' ? '100' : '500';
         } else {
-            infoDiv.style.display = 'none';
+            infoDiv.classList.add('hidden');
         }
     }
     

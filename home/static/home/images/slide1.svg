@@ -1,0 +1,91 @@
+<svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#98FB98;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="farmGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#228B22;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#32CD32;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Sky background -->
+  <rect width="800" height="250" fill="url(#skyGradient)"/>
+  
+  <!-- Ground -->
+  <rect y="250" width="800" height="150" fill="url(#farmGradient)"/>
+  
+  <!-- Farm building -->
+  <rect x="100" y="150" width="200" height="100" fill="#8B4513" stroke="#654321" stroke-width="2"/>
+  <polygon points="100,150 200,100 300,150" fill="#CD853F"/>
+  
+  <!-- Door -->
+  <rect x="180" y="200" width="40" height="50" fill="#654321"/>
+  
+  <!-- Windows -->
+  <rect x="120" y="170" width="30" height="25" fill="#87CEEB"/>
+  <rect x="250" y="170" width="30" height="25" fill="#87CEEB"/>
+  
+  <!-- Chickens -->
+  <!-- Chicken 1 -->
+  <ellipse cx="400" cy="300" rx="20" ry="15" fill="#FFFFFF"/>
+  <circle cx="400" cy="290" r="12" fill="#FFFFFF"/>
+  <polygon points="412,290 418,288 412,292" fill="#FFA500"/>
+  <circle cx="404" cy="287" r="2" fill="#000"/>
+  <path d="M390,280 Q395,275 400,280 Q405,275 410,280" fill="#FF0000"/>
+  
+  <!-- Chicken 2 -->
+  <ellipse cx="500" cy="310" rx="18" ry="13" fill="#F5DEB3"/>
+  <circle cx="500" cy="300" r="10" fill="#F5DEB3"/>
+  <polygon points="510,300 515,298 510,302" fill="#FFA500"/>
+  <circle cx="503" cy="298" r="1.5" fill="#000"/>
+  <path d="M493,292 Q497,288 500,292 Q503,288 507,292" fill="#FF0000"/>
+  
+  <!-- Chicken 3 -->
+  <ellipse cx="350" cy="320" rx="22" ry="16" fill="#DDD"/>
+  <circle cx="350" cy="308" r="13" fill="#DDD"/>
+  <polygon points="363,308 369,306 363,310" fill="#FFA500"/>
+  <circle cx="354" cy="305" r="2" fill="#000"/>
+  <path d="M340,298 Q345,293 350,298 Q355,293 360,298" fill="#FF0000"/>
+  
+  <!-- Fence -->
+  <g stroke="#8B4513" stroke-width="3" fill="none">
+    <line x1="50" y1="280" x2="50" y2="320"/>
+    <line x1="80" y1="280" x2="80" y2="320"/>
+    <line x1="110" y1="280" x2="110" y2="320"/>
+    <line x1="140" y1="280" x2="140" y2="320"/>
+    <line x1="50" y1="290" x2="140" y2="290"/>
+    <line x1="50" y1="310" x2="140" y2="310"/>
+  </g>
+  
+  <!-- Sun -->
+  <circle cx="700" cy="80" r="40" fill="#FFD700"/>
+  <g stroke="#FFD700" stroke-width="3">
+    <line x1="700" y1="20" x2="700" y2="35"/>
+    <line x1="700" y1="125" x2="700" y2="140"/>
+    <line x1="640" y1="80" x2="655" y2="80"/>
+    <line x1="745" y1="80" x2="760" y2="80"/>
+    <line x1="660" y1="40" x2="670" y2="50"/>
+    <line x1="730" y1="110" x2="740" y2="120"/>
+    <line x1="740" y1="40" x2="730" y2="50"/>
+    <line x1="670" y1="110" x2="660" y2="120"/>
+  </g>
+  
+  <!-- Clouds -->
+  <ellipse cx="150" cy="60" rx="25" ry="15" fill="#FFFFFF" opacity="0.8"/>
+  <ellipse cx="170" cy="55" rx="30" ry="18" fill="#FFFFFF" opacity="0.8"/>
+  <ellipse cx="190" cy="60" rx="20" ry="12" fill="#FFFFFF" opacity="0.8"/>
+  
+  <ellipse cx="550" cy="40" rx="20" ry="12" fill="#FFFFFF" opacity="0.8"/>
+  <ellipse cx="565" cy="35" rx="25" ry="15" fill="#FFFFFF" opacity="0.8"/>
+  
+  <!-- Text overlay -->
+  <rect x="0" y="340" width="800" height="60" fill="rgba(0,0,0,0.7)"/>
+  <text x="400" y="365" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">
+    Premium Quality Chicks
+  </text>
+  <text x="400" y="385" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#F8F9FA">
+    Healthy layers and broilers for your poultry farm success
+  </text>
+</svg>

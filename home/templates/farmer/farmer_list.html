@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1>
+                    <h1 class="page-title">
                         <i class="bi bi-people me-2"></i>Farmer Management
                     </h1>
                     <a href="{% url 'farmer_create' %}" class="btn btn-primary">
@@ -34,7 +34,7 @@
                 <div class="d-flex justify-content-end gap-2">
                     <form method="get" class="d-flex">
                         {% if search_query %}<input type="hidden" name="search" value="{{ search_query }}">{% endif %}
-                        <select name="type" class="form-select" onchange="this.form.submit()">
+                        <select name="type" class="form-select" title="Filter farmers by type" onchange="this.form.submit()">
                             <option value="">All Farmer Types</option>
                             {% for choice in farmer_types %}
                             <option value="{{ choice.0 }}" {% if farmer_type == choice.0 %}selected{% endif %}>
@@ -53,7 +53,7 @@
         </div>
 
         <!-- Farmer Table -->
-        <div class="card">
+        <div class="card main-card">
             <div class="card-body">
                 {% if page_obj %}
                 <div class="table-responsive">
@@ -75,22 +75,22 @@
                             {% for farmer in page_obj %}
                             <tr>
                                 <td>
-                                    <strong>{{ farmer.farmer_name }}</strong>
+                                    <strong class="farmer-name">{{ farmer.farmer_name }}</strong>
                                 </td>
                                 <td>
-                                    <span class="badge bg-{% if farmer.farmer_age >= 18 and farmer.farmer_age <= 30 %}success{% else %}warning{% endif %}">
+                                    <span class="badge {% if farmer.farmer_age >= 18 and farmer.farmer_age <= 30 %}badge-age-young{% else %}badge-age-mature{% endif %}">
                                         {{ farmer.farmer_age }} years
                                     </span>
                                 </td>
                                 <td>{{ farmer.farmer_gender|title }}</td>
                                 <td>
-                                    <span class="badge bg-{% if farmer.type_of_farmer == 'starter' %}primary{% else %}secondary{% endif %}">
+                                    <span class="badge {% if farmer.type_of_farmer == 'starter' %}badge-starter{% else %}badge-experienced{% endif %}">
                                         {{ farmer.type_of_farmer|title }}
                                     </span>
                                 </td>
                                 <td>{{ farmer.phone_number }}</td>
                                 <td>
-                                    <span class="badge bg-{% if farmer.status == 'approved' %}success{% elif farmer.status == 'rejected' %}danger{% else %}warning{% endif %}">
+                                    <span class="badge {% if farmer.status == 'approved' %}badge-approved{% elif farmer.status == 'rejected' %}badge-rejected{% else %}badge-pending{% endif %}">
                                         {{ farmer.status|title }}
                                     </span>
                                 </td>
@@ -110,23 +110,27 @@
                                         {% if user.is_manager %}
                                             {% if farmer.status == 'pending' %}
                                             <button class="btn btn-outline-success" 
-                                                    onclick="approveFarmer({{ farmer.pk }})" title="Approve">
+                                                    onclick="approveFarmer('{{ farmer.pk }}')" title="Approve">
                                                 <i class="bi bi-check-circle"></i>
                                             </button>
                                             <button class="btn btn-outline-danger" 
-                                                    onclick="rejectFarmer({{ farmer.pk }})" title="Reject">
+                                                    onclick="rejectFarmer('{{ farmer.pk }}')" title="Reject">
                                                 <i class="bi bi-x-circle"></i>
                                             </button>
                                             {% endif %}
                                         {% elif user.is_salesagent %}
                                             {% if farmer.status == 'approved' %}
                                             <button class="btn btn-outline-success" 
-                                                    onclick="createRequest({{ farmer.pk }})" title="Create Request">
+                                                    onclick="createRequest('{{ farmer.pk }}')" title="Create Request">
                                                 <i class="bi bi-plus-circle"></i>
                                             </button>
-                                            {% else %}
-                                            <span class="badge bg-secondary" title="Farmer must be approved first">
+                                            {% elif farmer.status == 'pending' %}
+                                            <span class="badge badge-secondary" title="Farmer awaiting manager approval">
                                                 Awaiting Approval
+                                            </span>
+                                            {% elif farmer.status == 'rejected' %}
+                                            <span class="badge badge-danger" title="Farmer application was rejected">
+                                                Rejected
                                             </span>
                                             {% endif %}
                                         {% endif %}
@@ -141,7 +145,7 @@
                 <!-- Summary Stats -->
                 <div class="row mt-4">
                     <div class="col-md-12">
-                        <div class="alert alert-info">
+                        <div class="summary-alert">
                             <div class="row text-center">
                                 <div class="col-md-3">
                                     <strong>Total Farmers:</strong> {{ page_obj.paginator.count }}
@@ -160,45 +164,28 @@
                     </div>
                 </div>
 
-                <!-- Pagination -->
                 {% if page_obj.has_other_pages %}
                 <nav aria-label="Farmer pagination">
-                    <ul class="pagination justify-content-center">
-                        {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if farmer_type %}&type={{ farmer_type }}{% endif %}">First</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if farmer_type %}&type={{ farmer_type }}{% endif %}">Previous</a>
-                        </li>
-                        {% endif %}
-
-                        <li class="page-item active">
-                            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-                        </li>
-
-                        {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if farmer_type %}&type={{ farmer_type }}{% endif %}">Next</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if farmer_type %}&type={{ farmer_type }}{% endif %}">Last</a>
-                        </li>
-                        {% endif %}
-                    </ul>
+                    {% if page_obj.has_previous and page_obj.has_next %}
+                    <ul class="pagination justify-content-center"><li class="page-item"><a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if farmer_type %}&type={{ farmer_type }}{% endif %}">First</a></li><li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if farmer_type %}&type={{ farmer_type }}{% endif %}">Previous</a></li><li class="page-item active"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li><li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if farmer_type %}&type={{ farmer_type }}{% endif %}">Next</a></li><li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if farmer_type %}&type={{ farmer_type }}{% endif %}">Last</a></li></ul>
+                    {% elif page_obj.has_previous %}
+                    <ul class="pagination justify-content-center"><li class="page-item"><a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if farmer_type %}&type={{ farmer_type }}{% endif %}">First</a></li><li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if farmer_type %}&type={{ farmer_type }}{% endif %}">Previous</a></li><li class="page-item active"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li></ul>
+                    {% elif page_obj.has_next %}
+                    <ul class="pagination justify-content-center"><li class="page-item active"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li><li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if farmer_type %}&type={{ farmer_type }}{% endif %}">Next</a></li><li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if farmer_type %}&type={{ farmer_type }}{% endif %}">Last</a></li></ul>
+                    {% endif %}
                 </nav>
                 {% endif %}
                 {% else %}
-                <div class="text-center py-5">
-                    <i class="bi bi-people icon-large text-muted"></i>
-                    <h4 class="mt-3 text-muted">No Farmers Found</h4>
+                <div class="empty-state">
+                    <i class="bi bi-people icon-large"></i>
+                    <h4 class="mt-3">No Farmers Found</h4>
                     {% if search_query %}
-                    <p class="text-muted">No farmers match your search for "{{ search_query }}"</p>
+                    <p>No farmers match your search for "{{ search_query }}"</p>
                     <a href="{% url 'farmer_list' %}" class="btn btn-outline-primary">
                         <i class="bi bi-arrow-left me-1"></i>View All Farmers
                     </a>
                     {% else %}
-                    <p class="text-muted">No farmers have been registered yet.</p>
+                    <p>No farmers have been registered yet.</p>
                     <a href="{% url 'farmer_create' %}" class="btn btn-primary">
                         <i class="bi bi-person-plus me-2"></i>Register First Farmer
                     </a>
@@ -212,8 +199,298 @@
 
 {% block extra_css %}
 <style>
+    .content-wrapper {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
     .icon-large {
         font-size: 4rem;
+        color: #95a5a6;
+    }
+    
+    .main-card {
+        background-color: #ecf0f1;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 2px 8px rgba(149, 165, 166, 0.1);
+        border-left: 4px solid #3498db;
+        transition: all 0.3s ease;
+    }
+    
+    .main-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(149, 165, 166, 0.15);
+    }
+    
+    .main-card .card-body {
+        background-color: #ecf0f1;
+        padding: 2rem;
+    }
+    
+    .page-title {
+        color: #2c3e50;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #2980b9 0%, #2471a3 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .btn-outline-primary {
+        border: 2px solid #3498db;
+        color: #3498db;
+        background: transparent;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-primary:hover {
+        background-color: #3498db;
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    .btn-outline-secondary {
+        border: 2px solid #95a5a6;
+        color: #7f8c8d;
+        background: transparent;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-secondary:hover {
+        background-color: #95a5a6;
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    .btn-outline-info {
+        border: 2px solid #3498db;
+        color: #3498db;
+        background: transparent;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        padding: 0.375rem 0.75rem;
+    }
+    
+    .btn-outline-info:hover {
+        background-color: #3498db;
+        color: white;
+    }
+    
+    .btn-outline-success {
+        border: 2px solid #27ae60;
+        color: #27ae60;
+        background: transparent;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        padding: 0.375rem 0.75rem;
+    }
+    
+    .btn-outline-success:hover {
+        background-color: #27ae60;
+        color: white;
+    }
+    
+    .btn-outline-danger {
+        border: 2px solid #e74c3c;
+        color: #e74c3c;
+        background: transparent;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        padding: 0.375rem 0.75rem;
+    }
+    
+    .btn-outline-danger:hover {
+        background-color: #e74c3c;
+        color: white;
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid #bdc3c7;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+        color: #2c3e50;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        background-color: white;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(149, 165, 166, 0.1);
+    }
+    
+    .table thead th {
+        background-color: #2c3e50;
+        color: white;
+        border: none;
+        padding: 1rem 0.75rem;
+        font-weight: 600;
+    }
+    
+    .table tbody td {
+        padding: 0.875rem 0.75rem;
+        border-color: #dee2e6;
+        vertical-align: middle;
+        color: #2c3e50;
+    }
+    
+    .badge {
+        border-radius: 15px;
+        padding: 0.4rem 0.8rem;
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+    
+    .badge-age-young {
+        background: linear-gradient(135deg, #d5f4e6 0%, #a9dfbf 100%);
+        color: #196f3d;
+        border: 2px solid #27ae60;
+    }
+    
+    .badge-age-mature {
+        background: linear-gradient(135deg, #fdeaa7 0%, #f9ca24 100%);
+        color: #b7950b;
+        border: 2px solid #f39c12;
+    }
+    
+    .badge-starter {
+        background: linear-gradient(135deg, #ebf3fd 0%, #d6eaff 100%);
+        color: #1f4e79;
+        border: 2px solid #3498db;
+    }
+    
+    .badge-experienced {
+        background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+        color: #2c3e50;
+        border: 2px solid #95a5a6;
+    }
+    
+    .badge-approved {
+        background: linear-gradient(135deg, #d5f4e6 0%, #a9dfbf 100%);
+        color: #196f3d;
+        border: 2px solid #27ae60;
+    }
+    
+    .badge-rejected {
+        background: linear-gradient(135deg, #fadbd8 0%, #f1948a 100%);
+        color: #922b21;
+        border: 2px solid #e74c3c;
+    }
+    
+    .badge-pending {
+        background: linear-gradient(135deg, #fdeaa7 0%, #f9ca24 100%);
+        color: #b7950b;
+        border: 2px solid #f39c12;
+    }
+    
+    .badge-secondary {
+        background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+        color: #2c3e50;
+        border: 2px solid #95a5a6;
+    }
+    
+    .badge-danger {
+        background: linear-gradient(135deg, #f5d7d7 0%, #e8c4c4 100%);
+        color: #721c24;
+        border: 2px solid #a85757;
+        font-weight: 500;
+    }
+    
+    .summary-alert {
+        background: linear-gradient(135deg, #e8f0f8 0%, #d4dde8 100%);
+        border: none;
+        border-radius: 15px;
+        padding: 1.5rem;
+        border-left: 4px solid #3498db;
+        color: #2c3e50;
+        margin-top: 1.5rem;
+    }
+    
+    .summary-alert .row div {
+        border-right: 1px solid #bdc3c7;
+        padding: 0.5rem;
+    }
+    
+    .summary-alert .row div:last-child {
+        border-right: none;
+    }
+    
+    .empty-state {
+        background: linear-gradient(135deg, #ecf0f1 0%, #d5dbdb 100%);
+        border-radius: 15px;
+        padding: 3rem;
+        text-align: center;
+        border-left: 4px solid #95a5a6;
+    }
+    
+    .empty-state h4 {
+        color: #2c3e50;
+        margin-top: 1rem;
+    }
+    
+    .empty-state p {
+        color: #7f8c8d;
+    }
+    
+    .pagination .page-link {
+        color: #7f8c8d;
+        border: 1px solid #bdc3c7;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+        border-radius: 6px;
+        margin: 0 2px;
+    }
+    
+    .pagination .page-link:hover {
+        color: white;
+        background-color: #3498db;
+        border-color: #3498db;
+        transform: translateY(-1px);
+    }
+    
+    .pagination .page-item.active .page-link {
+        background-color: #2c3e50;
+        border-color: #2c3e50;
+        color: white;
+    }
+    
+    .table-responsive {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .text-muted {
+        color: #7f8c8d !important;
+    }
+    
+    .farmer-name {
+        color: #2c3e50;
+        font-weight: 600;
     }
 </style>
 {% endblock %}
@@ -243,6 +520,7 @@
                 }
             })
             .catch(error => {
+                console.error('Error:', error);
                 alert('Error: ' + error);
             });
         }
@@ -266,6 +544,7 @@
                 }
             })
             .catch(error => {
+                console.error('Error:', error);
                 alert('Error: ' + error);
             });
         }
